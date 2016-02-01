@@ -41,8 +41,8 @@ object Exercises extends App {
     if (n == 0) 1
     else if (n < 0) 1 / power(x, -n)
     else {
-      if (n % 2 == 0) power(x, n / 2) * power(x, n / 2)
-      else x * power(x, n - 1)
+      if (n % 2 == 0) power( x, n / 2 ) * power( x, n / 2 )
+      else x * power( x, n - 1 )
     }
 
   // A few tests, uncomment when your implementation is ready.
@@ -63,13 +63,13 @@ object Exercises extends App {
 
   // Exercise 4
 
-  def fib (n: Int) : Int = 
+  def fib (n: Int) : Int =
     n match {
       case 0 => 0
       case 1 => 1
       case _ => fib(n-1) + fib(n-2)
     }
-    
+
 
   // some tests (uncomment, add more):
 
@@ -135,7 +135,7 @@ object Exercises extends App {
 
   // Exercise 8
 
-  def curry[A,B,C] (f: (A,B)=>C) : A => (B => C) = a => b => f(a,b)
+  def curry[A, B, C](f: (A, B) => C): A => (B => C) = a => b => f( a, b )
 
   //
   // test if it type checks by currying power automatically:
@@ -150,7 +150,7 @@ object Exercises extends App {
 
   // Exercise 10
 
-  def compose[A,B,C] (f: B => C, g: A => B) : A => C = (a:A) => f(g(a))
+  def compose[A, B, C](f: B => C, g: A => B): A => C = (a: A) => f( g( a ) )
 
 }
 
