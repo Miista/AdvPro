@@ -137,8 +137,9 @@ object Exercises extends App {
   // Exercise 7: a curried version of solution to exercise 3
   def power1(x: Double)(n: Int): Double = power(x, n)
 
-  // Exercise 8
+  assert (power1(2)(3) == 8.0)
 
+  // Exercise 8
   def curry[A,B,C](f: (A,B) => C): A => (B => C) = a => b => f( a,b )
 
   //
