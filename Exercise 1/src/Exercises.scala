@@ -74,8 +74,10 @@ object Exercises extends App {
 
   // some tests (uncomment, add more):
 
-  //assert (fib (1) == 0)
-  // ...
+  assert( fib( 0 ) == 0 )
+  assert( fib( 1 ) == 1 )
+  assert( fib( 4 ) == 3 )
+  assert( fib( 5 ) == 5 )
 
   // Exercise 5
 
