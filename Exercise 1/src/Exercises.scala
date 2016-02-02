@@ -98,12 +98,11 @@ object Exercises extends App {
 
   // computes the total of expenses in cents
 
-  //@annotation.tailrec
-  def total (expenses: Array[Expense]) : Int = 
-    if (expenses.size == 1)
-      expenses.head.price
-    else
-      expenses.head.price + total(expenses.tail)
+  def total(expenses: Array[Expense]): Int = {
+    @annotation.tailrec
+    def t(v: Int, list: Array[Expense]): Int = if (list.length == 0) v else t( v + list.head.price, list.tail )
+    t( expenses.head.price, expenses.tail )
+  }
 
   val testcase1 = Array[Expense](
     new Expense("Coffee", 450),
@@ -111,9 +110,11 @@ object Exercises extends App {
 
   assert (total (testcase1) == 800) // uncomment
 
-  // Add one or two more tests
-  // ...
+  val testcase2 = testcase1 :+ new Expense("Cheese", 200) :+ new Expense("Milk", 350)
+  assert (total (testcase2) == 1350)
 
+  val testcase3 = testcase2 :+ new Expense("Tax Return", -1350)
+  assert (total (testcase3) == 0)
 
   // Exercise 6
 
