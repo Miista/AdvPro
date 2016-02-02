@@ -1,7 +1,7 @@
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
-// AUTHOR1:
-// AUTHOR2:
+// AUTHOR1: Ivan Naumovski (inau@itu.dk)
+// AUTHOR2: Søren Palmund (spal@itu.dk)
 //
 // Write names and ITU email addresses of both group members that contributed to
 // the solution of the exercise (in alphabetical order by family name).
@@ -36,38 +36,40 @@
 object Exercises extends App {
 
   // Exercise 3
-
   def power(x: Double, n: Int): Double =
-    if (n == 0) 1
-    else if (n < 0) 1 / power( x, -n )
-    else {
-      if (n % 2 == 0) power( x, n / 2 ) * power( x, n / 2 )
-      else x * power( x, n - 1 )
+    n match {
+      case 0 => 1
+      case n if n < 0 => 1 / power( x, -n )
+      case _ => if (n % 2 == 0) power( x, n / 2 ) * power( x, n / 2 ) else x * power( x, n - 1 )
     }
 
   // A few tests, uncomment when your implementation is ready.
 
-  //assert (power (2.0, 2) == 4.0)
-  //assert (power (1.0, 42) == 1.0)
+  assert (power (2.0, 2) == 4.0)
+  assert (power (1.0, 42) == 1.0)
   //
   // The above assertions should pass when you call "scala Exercises".
   //
   // The following one should fail. Uncomment to check that assert works as
   // expected:
   //
-  // assert (power (1.0, 42) == 2.0)
+//  assert (power (1.0, 42) == 2.0)
 
   // add 2-3 more tests:
-  //
-  // ...
+  assert( power( -2.0, 3 ) == -8.0 )
+  assert( power( -2.0, 4 ) == 16.0 )
+  assert( power( 2.0, -3 ) == 0.125 )
 
   // Exercise 4
-
-  def fib(n: Int): Int =
-    n match {
-      case 0 | 1 => n
-      case _ => fib( n - 1 ) + fib( n - 2 )
-    }
+  def fib(n: Int): Int = {
+    @annotation.tailrec
+    def go(count: Int, prev: Int, acc: Int): Int =
+      count match {
+        case 0 => acc
+        case _ => go( count - 1, acc, acc + prev )
+      }
+    go( n, 1, 0 )
+  }
 
 
   // some tests (uncomment, add more):
