@@ -140,15 +140,13 @@ object Exercises extends App {
   assert (power1(2)(3) == 8.0)
 
   // Exercise 8
-  def curry[A,B,C](f: (A,B) => C): A => (B => C) = a => b => f( a,b )
+  def curry[A,B,C](f: (A,B) => C): A => (B => C) = a => b => f( a, b )
 
-  //
   // test if it type checks by currying power automatically:
 
   val power_curried: Double => Int => Double = curry(power)
 
   // Exercise 9
-
   def uncurry[A,B,C](f: A => B => C): (A, B) => C = (a, b) => f( a )( b )
 
   val power_uncurried: (Double,Int) => Double = uncurry( curry(power) )
