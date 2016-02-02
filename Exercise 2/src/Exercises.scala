@@ -1,7 +1,7 @@
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
-// AUTHOR1:
-// AUTHOR2:
+// AUTHOR1: Ivan Naumovski (inau@itu.dk)
+// AUTHOR2: Søren Palmund (spal@itu.dk)
 //
 // Write names and ITU email addresses of both group members that contributed to
 // the solution of the exercise (in alphabetical order by family name).
@@ -32,9 +32,7 @@
 // An ADT of Lists
 
 sealed trait List[+A]
-
 case object Nil extends List[Nothing]
-
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
 object List {
@@ -46,7 +44,6 @@ object List {
     else Cons(as.head, apply(as.tail: _*))
 
   // Exercise 2
-
   def tail[A](as: List[A]): List[A] =
     as match {
       case Nil => Nil
@@ -55,20 +52,17 @@ object List {
 
 
   // Exercise 3
-
-  def setHead[A](as: List[A], newHead: A): List[A] = Cons(newHead, as)
+  def setHead[A](as: List[A], newHead: A): List[A] = Cons( newHead, as )
 
   // Exercise 4
-
   def drop[A](l: List[A], n: Int): List[A] =
     if (n == 0) l
     else l match {
       case Nil => Nil
-      case Cons(head, tail) => drop(tail, n - 1)
+      case Cons(head, tail) => drop( tail, n-1 )
     }
 
   // Exercise 5
-
   def dropWhile[A](l: List[A], f: A => Boolean): List[A] =
     l match {
       case Nil => Nil
@@ -77,7 +71,6 @@ object List {
 
 
   // Exercise 6
-
   def init[A](l: List[A]): List[A] =
     l match {
       case Nil => Nil
@@ -89,16 +82,14 @@ object List {
   // Exercise 7 is in the bottom of the file
 
   // Exercise 8
-
   def foldRight[A, B](as: List[A], z: B)(f: (A, B) => B): B = as match {
     case Nil => z
     case Cons(x, xs) => f(x, foldRight(xs, z)(f))
   }
 
-  def length[A](as: List[A]): Int = foldRight(as, 0)((n, acc) => acc + 1)
+  def length[A](as: List[A]): Int = foldRight( as, 0 )( (n, acc) => acc + 1 )
 
   // Exercise 9
-
   @annotation.tailrec
   def foldLeft[A, B](as: List[A], z: B)(f: (B, A) => B): B = as match {
     case Nil => z
@@ -107,7 +98,6 @@ object List {
 
 
   // Exercise 10
-
   def sum(as: List[Int]): Int = foldLeft(as, 0)(_ + _)
 
   def product(as: List[Int]): Int = foldLeft(as, 1)(_ * _)
@@ -115,12 +105,9 @@ object List {
   def length1(as: List[Int]): Int = foldLeft(as, 0)((acc, n) => acc + 1)
 
   // Exercise 11
-
-  def reverse[A](as: List[A]): List[A]
-  = foldLeft(as, List[A]())(setHead)
+  def reverse[A](as: List[A]): List[A] = foldLeft(as, List[A]())(setHead)
 
   // Exercise 12
-
   def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = ???
 
   //= foldLeft(reverse(as), List[A]()) (f)
@@ -139,25 +126,20 @@ object List {
   def concat[A](as: List[List[A]]): List[A] = foldLeft(as, List[A]())((b, a) => append(b, a))
 
   // Exercise 14
-
   def map[A, B](a: List[A])(f: A => B): List[B] = foldRight(a, List[B]())((v, acc) => Cons(f(v), acc))
 
   // Exercise 15 (no coding)
 
   // Exercise 16
-
   def filter[A](as: List[A])(f: A => Boolean): List[A] = foldLeft(as, List[A]())((acc, v) => if (f(v)) Cons(v, acc) else acc)
 
   // Exercise 17
-
   def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = foldRight(as, List[B]())((v, acc) => append(f(v), acc))
 
   // Exercise 18
-
   def filter1[A](l: List[A])(p: A => Boolean): List[A] = flatMap(l)(v => if (p(v)) List(v) else Nil)
 
   // Exercise 19
-
   def add (l: List[Int]) (r: List[Int]) : List[Int] =
     l match {
       case Nil => Nil
@@ -169,7 +151,6 @@ object List {
     }
 
   // Exercise 20
-
   def zipWith[A, B, C](f: (A, B) => C)(l: List[A], r: List[B]): List[C] =
     l match {
       case Nil => Nil
@@ -181,7 +162,6 @@ object List {
     }
 
   // Exercise 21
-
   def hasSubsequence[A](list: List[A], sub: List[A]): Boolean = {
     def inner(innerList: List[A], innerSub: List[A], originalSub: List[A]): Boolean = innerSub match {
       case Nil => true
