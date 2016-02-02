@@ -33,7 +33,7 @@
 // called default constructor). For App objects they will be executed as if they
 // were placed in the main method in Java.
 
-object Exercises extends App {
+object Exercises {
 
   // Exercise 3
   def power(x: Double, n: Int): Double =
@@ -149,12 +149,10 @@ object Exercises extends App {
   // Exercise 9
   def uncurry[A,B,C](f: A => B => C): (A, B) => C = (a, b) => f( a )( b )
 
-  val power_uncurried: (Double,Int) => Double = uncurry( curry(power) )
+  val power_uncurried: (Double,Int) => Double = uncurry( power_curried )
 
   // Exercise 10
-
-  def compose[A, B, C](f: B => C, g: A => B): A => C = (a: A) => f( g( a ) )
-
+  def compose[A,B,C](f: B => C, g: A => B): A => C = a => f( g( a ) )
 }
 
 object Main {
