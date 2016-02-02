@@ -117,24 +117,24 @@ object Exercises extends App {
   assert (total (testcase3) == 0)
 
   // Exercise 6
-
   @annotation.tailrec
-  def isSorted[A](as: Array[A], ordered: (A, A) => Boolean): Boolean =
+  def isSorted[A](as: Array[A], ordered: (A,A) => Boolean): Boolean =
     as.length match {
       case 0 | 1 => true
-      case _ => ordered(as.head, as.tail.head) && isSorted(as.tail, ordered)
+      case _ => ordered( as.head, as.tail.head ) && isSorted( as.tail, ordered )
     }
 
   // some tests (uncomment)
-
    assert ( isSorted (Array(1,2,3,4,5,6), (a: Int, b: Int)=> a <= b))
    assert (!isSorted (Array(6,2,3,4,5,6), (a: Int, b: Int)=> a <= b))
    assert (!isSorted (Array(1,2,3,4,5,1), (a: Int, b: Int)=> a <= b))
 
   // add two tests with another type, for example an Array[String]
+  assert( isSorted( Array( "a", "b", "c" ), (a: String, b: String) => a <= b ) )
+  assert( !isSorted( Array( "to be", "or", "not to be" ), (a: String, b: String) => a <= b ) )
+  assert( isSorted( Array( "not to be", "or", "to be" ), (a: String, b: String) => a <= b ) )
 
   // Exercise 7: a curried version of solution to exercise 3
-
   def power1(x: Double)(n: Int): Double = power(x, n)
 
   // Exercise 8
