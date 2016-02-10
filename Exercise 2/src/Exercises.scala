@@ -87,7 +87,7 @@ object List {
     case Cons(x, xs) => f(x, foldRight(xs, z)(f))
   }
 
-  def length[A](as: List[A]): Int = foldRight( as, 0 )( (n, acc) => acc + 1 )
+  def length[A](as: List[A]): Int = foldRight( as, 0 )( (_, acc) => acc + 1 )
 
   // Exercise 9
   @annotation.tailrec
@@ -98,11 +98,11 @@ object List {
 
 
   // Exercise 10
-  def sum(as: List[Int]): Int = foldLeft(as, 0)(_ + _)
+  def sum(as: List[Int]): Int = foldLeft(as, 0) (_ + _)
 
-  def product(as: List[Int]): Int = foldLeft(as, 1)(_ * _)
+  def product(as: List[Int]): Int = foldLeft(as, 1) (_ * _)
 
-  def length1(as: List[Int]): Int = foldLeft(as, 0)((acc, n) => acc + 1)
+  def length1(as: List[Int]): Int = foldLeft(as, 0) ((acc, _) => acc + 1)
 
   // Exercise 11
   def reverse[A](as: List[A]): List[A] = foldLeft(as, List[A]())(setHead)
@@ -115,7 +115,6 @@ object List {
   // def foldLeft1[A,B] (as: List[A], z: B) (f: (B,A) => B) : B = ...
 
   // Exercise 13
-
   def append[A](a1: List[A], a2: List[A]): List[A] = {
     a1 match {
       case Nil => a2
