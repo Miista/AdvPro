@@ -108,7 +108,15 @@ object List {
   def reverse[A](as: List[A]): List[A] = foldLeft(as, List[A]())(setHead)
 
   // Exercise 12
-  def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = ???
+  def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
+    foldLeft(as, (b: B) => b) (
+      (g: (B) => B, a: A) => {
+        (b: B) => {
+          g( f( a, b ) )
+        }
+      }
+    )(z)
+  }
 
   //= foldLeft(reverse(as), List[A]()) (f)
 
