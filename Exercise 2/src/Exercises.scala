@@ -118,9 +118,23 @@ object List {
     )(z)
   }
 
-  //= foldLeft(reverse(as), List[A]()) (f)
-
-  // def foldLeft1[A,B] (as: List[A], z: B) (f: (B,A) => B) : B = ...
+  //noinspection ScalaUnnecessaryParentheses
+  def foldLeft1[A,B](as: List[A], z: B)(f: (B,A)=>B) : B = {
+    def synthesizer(value: A, fun: (B)=>B): (B)=>B = b => fun( f( b, value ) )
+    /* Example (for clarity)
+     * val fn: (B) => B = foldRight( as, (b: B) => b )( synthesizer )
+     * fn is now a chain of methods. Following this chain results in the final
+     * B that we want.
+     * We follow this chain simply by invoking the function and as a chain
+     * reaction we will in the end get
+     * Since fn is a function from B to B we need to
+     */
+    (foldRight( as, (b: B) => b )( synthesizer )) (z)
+    /* Implementing it using foldRight means that foldRight returns a function of (B)=>B
+     * which again returns a function from (B)=>B.
+     * It's turtles all the way down.
+     */
+  }
 
   // Exercise 13
   def append[A](a1: List[A], a2: List[A]): List[A] = {
@@ -133,7 +147,8 @@ object List {
   def concat[A](as: List[List[A]]): List[A] = foldLeft(as, List[A]())((b, a) => append(b, a))
 
   // Exercise 14
-  def map[A, B](a: List[A])(f: A => B): List[B] = foldRight(a, List[B]())((v, acc) => Cons(f(v), acc))
+  def map[A, B](a: List[A])(f: A => B): List[B] =
+    foldRight( a, List[B]() )( (value, acc) => Cons( f( value ), acc ) )
 
   // Exercise 15 (no coding)
 
