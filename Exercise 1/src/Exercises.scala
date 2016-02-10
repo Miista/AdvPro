@@ -33,7 +33,7 @@
 // called default constructor). For App objects they will be executed as if they
 // were placed in the main method in Java.
 
-object Exercises {
+object Exercises extends App {
 
   // Exercise 3
   def power(x: Double, n: Int): Double =
@@ -137,7 +137,8 @@ object Exercises {
   // Exercise 7: a curried version of solution to exercise 3
   def power1(x: Double)(n: Int): Double = power(x, n)
 
-  assert (power1(2)(3) == 8.0)
+  val power2 = power1(2) _
+  assert (power2(3) == 8.0)
 
   // Exercise 8
   def curry[A,B,C](f: (A,B) => C): A => (B => C) = a => b => f( a, b )
