@@ -52,7 +52,8 @@ object List {
 
 
   // Exercise 3
-  def setHead[A](as: List[A], newHead: A): List[A] = Cons( newHead, as )
+  def setHead[A](as: List[A], newHead: A): List[A] =
+    Cons( newHead, as )
 
   // Exercise 4
   def drop[A](l: List[A], n: Int): List[A] =
@@ -87,7 +88,8 @@ object List {
     case Cons(x, xs) => f(x, foldRight(xs, z)(f))
   }
 
-  def length[A](as: List[A]): Int = foldRight( as, 0 )( (_, acc) => acc + 1 )
+  def length[A](as: List[A]): Int =
+    foldRight( as, 0 )( (_, acc) => acc + 1 )
 
   // Exercise 9
   @annotation.tailrec
@@ -98,14 +100,18 @@ object List {
 
 
   // Exercise 10
-  def sum(as: List[Int]): Int = foldLeft(as, 0) (_ + _)
+  def sum(as: List[Int]): Int =
+    foldLeft(as, 0) (_ + _)
 
-  def product(as: List[Int]): Int = foldLeft(as, 1) (_ * _)
+  def product(as: List[Int]): Int =
+    foldLeft(as, 1) (_ * _)
 
-  def length1(as: List[Int]): Int = foldLeft(as, 0) ((acc, _) => acc + 1)
+  def length1(as: List[Int]): Int =
+    foldLeft(as, 0) ((acc, _) => acc + 1)
 
   // Exercise 11
-  def reverse[A](as: List[A]): List[A] = foldLeft(as, List[A]())(setHead)
+  def reverse[A](as: List[A]): List[A] =
+    foldLeft(as, List[A]())(setHead)
 
   // Exercise 12
   def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
