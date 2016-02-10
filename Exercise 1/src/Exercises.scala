@@ -64,10 +64,8 @@ object Exercises extends App {
   def fib(n: Int): Int = {
     @annotation.tailrec
     def go(count: Int, prev: Int, acc: Int): Int =
-      count match {
-        case 0 => acc
-        case _ => go( count - 1, acc, acc + prev )
-      }
+      if (n == 0) prev
+      else go(count - 1, acc, prev + acc)
     go( n, 1, 0 )
   }
 
