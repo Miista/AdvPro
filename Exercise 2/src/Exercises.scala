@@ -174,15 +174,10 @@ object List {
   }
 
   // Exercise 20
-  def zipWith[A, B, C](f: (A, B) => C)(l: List[A], r: List[B]): List[C] =
-    l match {
-      case Nil => Nil
-      case Cons(h1, t1) =>
-        r match {
-          case Nil => Nil
-          case Cons(h2, t2) => Cons(f(h1, h2), zipWith(f)(t1, t2))
-        }
-    }
+  def zipWith[A, B, C](f: (A, B) => C)(l: List[A], r: List[B]): List[C] = (l,r) match {
+    case (Nil,_) | (_,Nil) => Nil // Either is empty
+    case (Cons(h1,t1), Cons(h2,t2)) => Cons( f(h1,h2), zipWith(f)(t1,t2) )
+  }
 
   // Exercise 21
   def hasSubsequence[A](list: List[A], sub: List[A]): Boolean = {
