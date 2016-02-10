@@ -168,15 +168,10 @@ object List {
   def filter1[A](l: List[A])(p: A => Boolean): List[A] = flatMap(l)(v => if (p(v)) List(v) else Nil)
 
   // Exercise 19
-  def add (l: List[Int]) (r: List[Int]) : List[Int] =
-    l match {
-      case Nil => Nil
-      case Cons(h1, t1) =>
-        r match {
-          case Nil => Nil
-          case Cons(h2, t2) => Cons(h1 + h2, add(t1)(t2))
-        }
-    }
+  def add (l: List[Int]) (r: List[Int]) : List[Int] = (l,r) match {
+    case (Nil, _) | (_, Nil) => Nil // Either is empty
+    case (Cons(h1,t1), Cons(h2,t2)) => new Cons(h1+h2, add(t1)(t2))
+  }
 
   // Exercise 20
   def zipWith[A, B, C](f: (A, B) => C)(l: List[A], r: List[B]): List[C] =
