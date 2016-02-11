@@ -1,3 +1,5 @@
+import java.awt.Point
+
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
 // AUTHOR1:
@@ -38,11 +40,29 @@
  * reimplement them in my subclass.  This is not a problem if I mix in a trait
  * construction time. */
 
-trait OrderedPoint extends ... {
-
-  override def compare (that :java.awt.Point) :Int =  ...
-
+trait OrderedPoint extends java.awt.Point {
+  def compare (that :java.awt.Point): Int = {
+    if (this.x < that.x || (this.x == that.x && this.y < that.y)) {
+      return -1
+    }
+    if (this.x > that.x || (this.x == that.x && this.y > that.y)) {
+      return 1
+    }
+    0
+  }
 }
+
+//class OrderedPoint extends java.awt.Point with scala.math.Ordered[Point] {
+//  override def compare(that: Point): Int = {
+//    if (this.x < that.x || (this.x == that.x && this.y < that.y)) {
+//      return -1
+//    }
+//    if (this.x > that.x || (this.x == that.x && this.y > that.y)) {
+//      return 1
+//    }
+//    0
+//  }
+//}
 
 // Chapter 3
 
@@ -53,24 +73,34 @@ case class Branch[A] (left: Tree[A], right: Tree[A]) extends Tree[A]
 object Tree {
 
   // Exercise 2 (3.25)
-
-  // def size[A] (t :Tree[A]) :Int = ...
+  def size[A] (t: Tree[A]): Int = t match {
+    case Leaf(v) => 1
+    case Branch(l,r) => 1 + size(l) + size(r)
+  }
 
   // Exercise 3 (3.26)
-
-  // def maximum (t: Tree[Int]) :Int = ...
+  def maximum (t: Tree[Int]): Int = t match {
+    case Leaf( v ) => v
+    case Branch( l, r ) => maximum( l ) max maximum( r )
+  }
 
   // Exercise 4 (3.27)
-
-  // def depth[A] (t :Tree[A]) :Int = ...
+  def depth[A] (t: Tree[A]): Int = t match {
+    case Branch(l,r) => Math.max( depth(l), depth(r) ) + 1
+    case Leaf(_) => 1
+  }
 
   // Exercise 5 (3.28)
-
-  // def map[A,B] (t: Tree[A]) (f: A => B) : Tree[B] = ...
+  def map[A, B] (t: Tree[A])(f: A => B): Tree[B] = t match {
+    case Leaf(v) => Leaf( f(v) )
+    case Branch(l,r) => Branch[B]( map(l)(f), map(r)(f) )
+  }
 
   // Exercise 6 (3.29)
-
-  // def fold[A,B] (t: Tree[A]) (f: (B,B) => B) (g: A => B) :B = ...
+  def fold[A, B] (t: Tree[A])(f: (B, B) => B)(g: A => B): B = t match {
+    case Leaf(v) => g(v)
+    case Branch(l,r) => f( fold(l)(f)(g), fold(r)(f)(g) )
+  }
 
   // def size1[A] ...
   // def maximum1 ...
