@@ -184,7 +184,14 @@ object ExercisesOption {
           b <- bo } yield f(a,b)
 
   // Exercise 10 (4.4)
-  def sequence[A] (aos: List[Option[A]]) : Option[List[A]] = ???
+  def sequence[A] (aos: List[scala.Option[A]]) : Option[List[A]] = {
+    def f(item: scala.Option[A]): A = item.get
+    if (aos.exists(_.isEmpty)) {
+      None
+    } else {
+      Some[List[A]]( for { x <- aos } yield f(x) )
+    }
+  }
 
   // Exercise 11 (4.5)
   def traverse[A,B] (as: List[A]) (f: A => Option[B]): Option[List[B]] = ???
