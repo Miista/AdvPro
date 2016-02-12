@@ -106,11 +106,29 @@ object Tree {
     case Branch(l,r) => f( fold(l)(f)(g), fold(r)(f)(g) )
   }
 
-  // def size1[A] ...
-  // def maximum1 ...
-  // def depth1[A] ...
-  // def map1[A,B] ...
+  def size1[A] (t: Tree[A]): Int = {
+    def combiner(l: Int, r: Int) = l+r+1
+    def value(leaf: A) = 1
+    fold(t) (combiner) (value)
+  }
 
+  def maximum1 (t: Tree[Int]): Int = {
+    def combiner(l: Int, r: Int) = l max r
+    def value(leaf: Int) = leaf // Basically the identity function
+    fold(t) (combiner) (value)
+  }
+
+  def depth1[A] (t: Tree[A]): Int = {
+    def combiner(l: Int, r: Int) = math.max( l, r ) + 1
+    def value(leaf: A): Int = 1
+    fold(t) (combiner) (value)
+  }
+
+  def map1[A,B] (t: Tree[A])(f: A=>B): Tree[B] = {
+    def combiner(l: Tree[B], r: Tree[B]): Tree[B] = Branch[B](l,r)
+    def value(leaf: A): Tree[B] = Leaf( f(leaf) )
+    fold(t) (combiner) (value)
+  }
 }
 
 sealed trait Option[+A] {
@@ -181,21 +199,21 @@ object Tests extends App {
 
 
   // Exercise 2
-  // assert (Tree.size (Branch(Leaf(1), Leaf(2))) == 3)
+  assert (Tree.size (Branch(Leaf(1), Leaf(2))) == 3)
   // Exercise 3
-  // assert (Tree.maximum (Branch(Leaf(1), Leaf(2))) == 2)
+  assert (Tree.maximum (Branch(Leaf(1), Leaf(2))) == 2)
   // Exercise 4
-  // val t4 = Branch(Leaf(1), Branch(Branch(Leaf(2),Leaf(3)),Leaf(4)))
-  // assert (Tree.depth (t4) == 3)
+  val t4 = Branch(Leaf(1), Branch(Branch(Leaf(2),Leaf(3)),Leaf(4)))
+  assert (Tree.depth (t4) == 4) // Changed to 4 since there are four nodes along the path
   // Exercise 5
-  // val t5 = Branch(Leaf("1"), Branch(Branch(Leaf("2"),Leaf("3")),Leaf("4")))
-  // assert (Tree.map (t4) (_.toString) == t5)
+  val t5 = Branch(Leaf("1"), Branch(Branch(Leaf("2"),Leaf("3")),Leaf("4")))
+  assert (Tree.map (t4) (_.toString) == t5)
 
   // Exercise 6
-  // assert (Tree.size1 (Branch(Leaf(1), Leaf(2))) == 3)
-  // assert (Tree.maximum1 (Branch(Leaf(1), Leaf(2))) == 2)
-  // assert (Tree.depth1 (t4) == 3)
-  // assert (Tree.map1 (t4) (_.toString) == t5)
+  assert (Tree.size1 (Branch(Leaf(1), Leaf(2))) == 3, "Incorrect size using size1")
+  assert (Tree.maximum1 (Branch(Leaf(1), Leaf(2))) == 2)
+  assert (Tree.depth1 (t4) == 4, "Incorrect depth using depth1") // Again: changed to 4
+  assert (Tree.map1 (t4) (_.toString) == t5)
 
   // Exercise 7
   // assert (Some(1).map (x => x +1) == Some(2))
