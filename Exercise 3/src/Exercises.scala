@@ -179,6 +179,16 @@ object ExercisesOption {
 //  def variance (xs: Seq[Double]) : Option[Double] = ???
 
   // Exercise 9 (4.3)
+  /**
+    * Takes two [[Option]]al values and combines them using
+    * the supplied function. If either of the values are [[None]]
+    * the entire expression is None.
+    *
+    * @param ao The first optional value
+    * @param bo The second optional value
+    * @param f A function that can combine values of type A and B
+    * @return Returns the combined value if both values are not-None
+    */
   def map2[A,B,C] (ao: Option[A], bo: Option[B]) (f: (A,B) => C): Option[C] =
     for {
       a <- ao
@@ -270,14 +280,14 @@ object Tests extends App {
    assert (ExercisesOption.map2 (None: Option[Int],None) (_ + _) == None)
 
   // Exercise 10
-//   assert (ExercisesOption.sequence (List(Some(1), Some(2), Some(42))) == Some(List(1,2,42)))
-//   assert (ExercisesOption.sequence (List(None,    Some(2), Some(42))) == None)
-//   assert (ExercisesOption.sequence (List(Some(1), None,    Some(42))) == None)
-//   assert (ExercisesOption.sequence (List(Some(1), Some(2), None    )) == None)
+   assert (ExercisesOption.sequence (List(Some(1), Some(2), Some(42))) == Some(List(1,2,42)))
+   assert (ExercisesOption.sequence (List(None,    Some(2), Some(42))) == None)
+   assert (ExercisesOption.sequence (List(Some(1), None,    Some(42))) == None)
+   assert (ExercisesOption.sequence (List(Some(1), Some(2), None    )) == None)
 
   // Exercise 11
-  // def f (n: Int) :Option[Int] = if (n%2 == 0) Some(n) else None
-  // assert (ExercisesOption.traverse (List(1,2,42)) (Some(_)) == Some(List(1,2,42)))
-  // assert (ExercisesOption.traverse (List(1,2,42)) (f) == None)
+   def f (n: Int) :Option[Int] = if (n%2 == 0) Some(n) else None
+   assert (ExercisesOption.traverse (List(1,2,42)) (Some(_)) == Some(List(1,2,42)))
+   assert (ExercisesOption.traverse (List(1,2,42)) (f) == None)
 
 }
