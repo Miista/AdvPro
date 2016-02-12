@@ -180,21 +180,36 @@ object ExercisesOption {
 
   // Exercise 9 (4.3)
   def map2[A,B,C] (ao: Option[A], bo: Option[B]) (f: (A,B) => C): Option[C] =
-    for { a <- ao
-          b <- bo } yield f(a,b)
+    for {
+      a <- ao
+      b <- bo
+    } yield f(a,b)
 
   // Exercise 10 (4.4)
-  def sequence[A] (aos: List[scala.Option[A]]) : Option[List[A]] = {
-    def f(item: scala.Option[A]): A = item.get
-    if (aos.exists(_.isEmpty)) {
-      None
-    } else {
-      Some[List[A]]( for { x <- aos } yield f(x) )
-    }
+  def sequence[A] (aos: List[Option[A]]) : Option[List[A]] = {
+    def mapper(a: Option[A], b: Option[List[A]]) =
+      map2(a,b) (_ :: _)
+
+    aos.foldRight[Option[List[A]]](Some(Nil)) (mapper)
   }
+//  {
+//    def f(item: scala.Option[A]): A = item.get
+//    if (aos.exists(_.isEmpty)) {
+//      None
+//    } else {
+//      Some[List[A]]( for { x <- aos } yield f(x) )
+//    }
+//  }
 
   // Exercise 11 (4.5)
-  def traverse[A,B] (as: List[A]) (f: A => Option[B]): Option[List[B]] = ???
+  def traverse[A,B] (as: List[A]) (f: A => Option[B]): Option[List[B]] = {
+    def mapper(item: A, others: Option[List[B]]) =
+      for{
+        b <- others
+        a <- f(item)
+      } yield a :: b
+    as.foldRight[Option[List[B]]](Some(Nil)) (mapper)
+  }
 }
 
 
