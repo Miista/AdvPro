@@ -41,6 +41,10 @@ import java.awt.Point
  * construction time. */
 
 trait OrderedPoint extends java.awt.Point {
+  def < (that: java.awt.Point): Boolean = compare(that) < 0
+
+  def > (that: java.awt.Point): Boolean = compare(that) < 0
+
   def compare (that :java.awt.Point): Int = {
     if (this.x < that.x || (this.x == that.x && this.y < that.y)) {
       return -1
@@ -166,9 +170,9 @@ object ExercisesOption {
 object Tests extends App {
 
   // Exercise 1
-  // val p = new java.awt.Point(0,1) with OrderedPoint
-  // val q = new java.awt.Point(0,2) with OrderedPoint
-  // assert(p < q)
+  val p = new java.awt.Point(0,1) with OrderedPoint
+  val q = new java.awt.Point(0,2) with OrderedPoint
+  assert(p < q)
 
   // Notice how we are using nice infix comparison on java.awt
   // objects that were implemented way before Scala existed :) (And without the
