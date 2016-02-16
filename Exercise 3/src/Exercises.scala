@@ -1,4 +1,5 @@
 import java.awt.Point
+import scala.math.max
 
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
@@ -40,11 +41,7 @@ import java.awt.Point
  * reimplement them in my subclass.  This is not a problem if I mix in a trait
  * construction time. */
 
-trait OrderedPoint extends java.awt.Point {
-  def < (that: java.awt.Point): Boolean = compare(that) < 0
-
-  def > (that: java.awt.Point): Boolean = compare(that) < 0
-
+trait OrderedPoint extends java.awt.Point with scala.math.Ordered[Point] {
   def compare (that :java.awt.Point): Int = {
     if (this.x < that.x || (this.x == that.x && this.y < that.y)) {
       return -1
@@ -77,40 +74,42 @@ case class Branch[A] (left: Tree[A], right: Tree[A]) extends Tree[A]
 object Tree {
 
   // Exercise 2 (3.25)
-  def size[A] (t: Tree[A]): Int = t match {
-    case Leaf(v) => 1
-    case Branch(l,r) => 1 + size(l) + size(r)
-  }
+  def size[A] (t: Tree[A]): Int =
+    t match {
+      case Leaf(v) => 1
+      case Branch(l,r) => 1 + size(l) + size(r)
+    }
 
   // Exercise 3 (3.26)
-  def maximum (t: Tree[Int]): Int = t match {
-    case Leaf( v ) => v
-    case Branch( l, r ) => maximum( l ) max maximum( r )
-  }
+  def maximum (t: Tree[Int]): Int =
+    t match {
+      case Leaf( v ) => v
+      case Branch( l, r ) => maximum( l ) max maximum( r )
+    }
 
   // Exercise 4 (3.27)
-  def depth[A] (t: Tree[A]): Int = t match {
-    case Branch(l,r) => Math.max( depth(l), depth(r) ) + 1
-    case Leaf(_) => 1
-  }
+  def depth[A] (t: Tree[A]): Int =
+    t match {
+      case Branch(l,r) => Math.max( depth(l), depth(r) ) + 1
+      case Leaf(_) => 1
+    }
 
   // Exercise 5 (3.28)
-  def map[A, B] (t: Tree[A])(f: A => B): Tree[B] = t match {
-    case Leaf(v) => Leaf( f(v) )
-    case Branch(l,r) => Branch[B]( map(l)(f), map(r)(f) )
-  }
+  def map[A, B] (t: Tree[A])(f: A => B): Tree[B] =
+    t match {
+      case Leaf(v) => Leaf( f(v) )
+      case Branch(l,r) => Branch[B]( map(l)(f), map(r)(f) )
+    }
 
   // Exercise 6 (3.29)
-  def fold[A, B] (t: Tree[A])(f: (B, B) => B)(g: A => B): B = t match {
-    case Leaf(v) => g(v)
-    case Branch(l,r) => f( fold(l)(f)(g), fold(r)(f)(g) )
-  }
+  def fold[A, B] (t: Tree[A])(f: (B, B) => B)(g: A => B): B =
+    t match {
+      case Leaf(v) => g(v)
+      case Branch(l,r) => f( fold(l)(f)(g), fold(r)(f)(g) )
+    }
 
-  def size1[A] (t: Tree[A]): Int = {
-    def combiner(l: Int, r: Int) = l+r+1
-    def value(leaf: A) = 1
-    fold(t) (combiner) (value)
-  }
+  def size1[A] (t: Tree[A]): Int =
+    fold[A,Int](t) (_+_) (a => 1)
 
   def maximum1 (t: Tree[Int]): Int = {
     def combiner(l: Int, r: Int) = l max r
@@ -118,11 +117,13 @@ object Tree {
     fold(t) (combiner) (value)
   }
 
-  def depth1[A] (t: Tree[A]): Int = {
-    def combiner(l: Int, r: Int) = math.max( l, r ) + 1
-    def value(leaf: A): Int = 1
-    fold(t) (combiner) (value)
-  }
+  def depth1[A] (t: Tree[A]): Int =
+    fold[A,Int](t) ((l,r) => max(l,r) + 1) (a => 1)
+//  {
+//    def combiner(l: Int, r: Int) = math.max( l, r ) + 1
+//    def value(leaf: A): Int = 1
+//    fold(t) (combiner) (value)
+//  }
 
   def map1[A,B] (t: Tree[A])(f: A=>B): Tree[B] = {
     def combiner(l: Tree[B], r: Tree[B]): Tree[B] = Branch[B](l,r)
@@ -134,34 +135,19 @@ object Tree {
 sealed trait Option[+A] {
 
   // Exercise 7 (4.1)
-  def map[B] (f: A=>B): Option[B] = this match {
-    case Some(v) => Some( f(v) )
-    case None => None
-  }
+  def map[B] (f: A=>B): Option[B] = ???
 
   // Ignore the arrow in default's type this week
   // (it should work (almost) as if it was not there)
 
-  def getOrElse[B >: A] (default: => B): B = this match {
-    case Some(v) => v
-    case None => default
-  }
+  def getOrElse[B >: A] (default: => B): B = ???
 
-  def flatMap[B] (f: A => Option[B]): Option[B] = this match {
-    case Some(v) => f(v)
-    case None => None
-  }
+  def flatMap[B] (f: A => Option[B]): Option[B] = ???
 
   // Ignore the arrow in ob's type this week
-  def orElse[B >: A] (ob: => Option[B]): Option[B] = this match {
-    case Some(v) => this
-    case None => ob
-  }
+  def orElse[B >: A] (ob: => Option[B]): Option[B] = ???
 
-  def filter (f: A => Boolean): Option[A] = this match {
-    case Some(v) => if (f(v)) this else None
-    case None => None
-  }
+  def filter (f: A => Boolean): Option[A] = ???
 }
 
 case class Some[+A] (get: A) extends Option[A]
@@ -229,8 +215,8 @@ object ExercisesOption {
 object Tests extends App {
 
   // Exercise 1
-  val p = new java.awt.Point(0,1) with OrderedPoint
-  val q = new java.awt.Point(0,2) with OrderedPoint
+  val p = new Point(0,1) with OrderedPoint
+  val q = new Point(0,2) with OrderedPoint
   assert(p < q)
 
   // Notice how we are using nice infix comparison on java.awt
