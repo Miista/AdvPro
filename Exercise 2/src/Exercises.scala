@@ -2,7 +2,7 @@ import scala.math.max
 
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
-// AUTHOR1: Ivan Nauvomski (inau@itu.dk)
+// AUTHOR1: Ivan Naumovski (inau@itu.dk)
 // AUTHOR2: Søren Palmund (spal@itu.dk)
 //
 // Write names and ITU email addresses of both group members that contributed to
@@ -34,9 +34,7 @@ import scala.math.max
 // An ADT of Lists
 
 sealed trait List[+A]
-
 case object Nil extends List[Nothing]
-
 case class Cons[+A](head: A, tail: List[A]) extends List[A]
 
 object List {
@@ -56,14 +54,15 @@ object List {
 
 
   // Exercise 3
-  def setHead[A](as: List[A], newHead: A): List[A] = Cons(newHead, as)
+  def setHead[A](as: List[A], newHead: A): List[A] =
+    Cons( newHead, as )
 
   // Exercise 4
   def drop[A](l: List[A], n: Int): List[A] =
     if (n == 0) l
     else l match {
       case Nil => Nil
-      case Cons(head, tail) => drop(tail, n - 1)
+      case Cons(head, tail) => drop( tail, n-1 )
     }
 
   // Exercise 5
@@ -103,22 +102,47 @@ object List {
 
 
   // Exercise 10
-  def sum(as: List[Int]): Int = foldLeft(as, 0)(_ + _)
+  def sum(as: List[Int]): Int =
+    foldLeft(as, 0) (_ + _)
 
-  def product(as: List[Int]): Int = foldLeft(as, 1)(_ * _)
+  def product(as: List[Int]): Int =
+    foldLeft(as, 1) (_ * _)
 
-  def length1(as: List[Int]): Int = foldLeft(as, 0)((acc, n) => acc + 1)
+  def length1(as: List[Int]): Int =
+    foldLeft(as, 0) ((acc, _) => acc + 1)
 
   // Exercise 11
-  def reverse[A](as: List[A]): List[A]
-  = foldLeft(as, List[A]())(setHead)
+  def reverse[A](as: List[A]): List[A] =
+    foldLeft(as, List[A]())(setHead)
 
   // Exercise 12
-  def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = ???
+  def foldRight1[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
+    foldLeft(as, (b: B) => b) (
+      (g: (B) => B, a: A) => {
+        (b: B) => {
+          g( f( a, b ) )
+        }
+      }
+    )(z)
+  }
 
-  //= foldLeft(reverse(as), List[A]()) (f)
-
-  // def foldLeft1[A,B] (as: List[A], z: B) (f: (B,A) => B) : B = ...
+  //noinspection ScalaUnnecessaryParentheses
+  def foldLeft1[A,B](as: List[A], z: B)(f: (B,A)=>B) : B = {
+    def synthesizer(value: A, fun: (B)=>B): (B)=>B = b => fun( f( b, value ) )
+    /* Example (for clarity)
+     * val fn: (B) => B = foldRight( as, (b: B) => b )( synthesizer )
+     * fn is now a chain of methods. Following this chain results in the final
+     * B that we want.
+     * We follow this chain simply by invoking the function and as a chain
+     * reaction we will in the end get
+     * Since fn is a function from B to B we need to
+     */
+    (foldRight( as, (b: B) => b )( synthesizer )) (z)
+    /* Implementing it using foldRight means that foldRight returns a function of (B)=>B
+     * which again returns a function from (B)=>B.
+     * It's turtles all the way down.
+     */
+  }
 
   // Exercise 13
   def append[A](a1: List[A], a2: List[A]): List[A] = {
@@ -133,43 +157,37 @@ object List {
 
   // Exercise 14
   def map[A, B](a: List[A])(f: A => B): List[B] =
-    foldRight(a, List[B]())((v, acc) => Cons(f(v), acc))
+    foldRight( a, List[B]() )( (value, acc) => Cons( f( value ), acc ) )
 
   // Exercise 15 (no coding)
 
   // Exercise 16
-  def filter[A](as: List[A])(f: A => Boolean): List[A] =
-    foldLeft(as, List[A]())((acc, v) => if (f(v)) Cons(v, acc) else acc)
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+    def fn(acc: List[A], value: A) = if (f(value)) Cons[A](value, acc) else acc
+    foldLeft( as, List[A]() ) (fn)
+  }
 
   // Exercise 17
-  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] =
-    foldRight(as, List[B]()) ((v, acc) => append(f(v), acc))
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = {
+    def fn(value: A, acc: List[B]) = append( f(value), acc )
+    foldRight(as, List[B]()) (fn)
+  }
 
   // Exercise 18
   def filter1[A](l: List[A])(p: A => Boolean): List[A] =
     flatMap(l)(v => if (p(v)) List(v) else Nil)
 
   // Exercise 19
-  def add (l: List[Int]) (r: List[Int]) : List[Int] =
-    l match {
-      case Nil => Nil
-      case Cons(h1, t1) =>
-        r match {
-          case Nil => Nil
-          case Cons(h2, t2) => Cons(h1 + h2, add(t1)(t2))
-        }
-    }
+  def add (l: List[Int]) (r: List[Int]) : List[Int] = (l,r) match {
+    case (Nil, _) | (_, Nil) => Nil // Either is empty
+    case (Cons(h1,t1), Cons(h2,t2)) => new Cons(h1+h2, add(t1)(t2))
+  }
 
   // Exercise 20
-  def zipWith[A, B, C](f: (A, B) => C)(l: List[A], r: List[B]): List[C] =
-    l match {
-      case Nil => Nil
-      case Cons(h1, t1) =>
-        r match {
-          case Nil => Nil
-          case Cons(h2, t2) => Cons(f(h1, h2), zipWith(f)(t1, t2))
-        }
-    }
+  def zipWith[A, B, C](f: (A, B) => C)(l: List[A], r: List[B]): List[C] = (l,r) match {
+    case (Nil,_) | (_,Nil) => Nil // Either is empty
+    case (Cons(h1,t1), Cons(h2,t2)) => Cons( f(h1,h2), zipWith(f)(t1,t2) )
+  }
 
   // Exercise 21
   def hasSubsequence[A](list: List[A], sub: List[A]): Boolean = {
