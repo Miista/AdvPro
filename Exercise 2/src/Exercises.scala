@@ -2,8 +2,8 @@ import scala.math.max
 
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
-// AUTHOR1:
-// AUTHOR2:
+// AUTHOR1: Ivan Nauvomski (inau@itu.dk)
+// AUTHOR2: Søren Palmund (spal@itu.dk)
 //
 // Write names and ITU email addresses of both group members that contributed to
 // the solution of the exercise (in alphabetical order by family name).
