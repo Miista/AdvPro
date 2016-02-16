@@ -1,8 +1,10 @@
+import scala.math.max
+
 // Advanced Programming, Exercises by A. WÄ…sowski, IT University of Copenhagen
 //
-// AUTHOR1:
-// AUTHOR2:
-// Group number:
+// AUTHOR1: Ivan Naumovski (inau@itu.dk)
+// AUTHOR2: Søren Palmund (spal@itu.dk)
+// Group number: 37
 //
 // Write names and ITU email addresses of both group members that contributed to
 // the solution of the exercise (in alphabetical order by family name).
@@ -38,10 +40,11 @@
  * reimplement them in my subclass.  This is not a problem if I mix in a trait
  * construction time. */
 
-trait OrderedPoint extends ... {
-
-  override def compare (that :java.awt.Point) :Int =  ...
-
+trait OrderedPoint extends java.awt.Point with scala.math.Ordered[java.awt.Point] {
+  override def compare (that: java.awt.Point): Int =
+    if (x < that.x || (x == that.x && y < that.y)) -1
+    else if (x > that.x || (x == that.x && y > that.y)) 1
+    else 0
 }
 
 // Chapter 3
@@ -53,50 +56,68 @@ case class Branch[A] (left: Tree[A], right: Tree[A]) extends Tree[A]
 object Tree {
 
   // Exercise 2 (3.25)
-
-  // def size[A] (t :Tree[A]) :Int = ...
+  def size[A] (t: Tree[A]): Int =
+    t match {
+      case Leaf(_) => 1
+      case Branch(l,r) => size(l) + size(r)
+    }
 
   // Exercise 3 (3.26)
-
-  // def maximum (t: Tree[Int]) :Int = ...
+  def maximum (t: Tree[Int]): Int =
+    t match {
+      case Leaf(v) => v
+      case Branch(l,r) => maximum(l) max maximum(r)
+    }
 
   // Exercise 4 (3.27)
-
-  // def depth[A] (t :Tree[A]) :Int = ...
+  def depth[A] (t: Tree[A]): Int =
+    t match {
+      case Leaf(_) => 1
+      case Branch(l,r) => (depth(l) max depth(r)) + 1
+    }
 
   // Exercise 5 (3.28)
-
-  // def map[A,B] (t: Tree[A]) (f: A => B) : Tree[B] = ...
+  def map[A, B] (t: Tree[A])
+                (f: A => B): Tree[B] =
+    t match {
+      case Leaf(v) => Leaf( f(v) )
+      case Branch(l,r) => Branch( map(l)(f), map(r)(f) )
+    }
 
   // Exercise 6 (3.29)
+  def fold[A, B] (t: Tree[A])
+                 (f: (B, B) => B)
+                 (g: A => B): B =
+    t match {
+      case Leaf(v) => g(v)
+      case Branch(l,r) => f( fold(l)(f)(g), fold(r)(f)(g) )
+    }
 
-  // def fold[A,B] (t: Tree[A]) (f: (B,B) => B) (g: A => B) :B = ...
-
-  // def size1[A] ...
-  // def maximum1 ...
-  // def depth1[A] ...
-  // def map1[A,B] ...
-
+  def size1[A] (t: Tree[A]) = fold[A,Int](t) (_+_) (a => 1)
+  def maximum1 (t: Tree[Int]) = fold(t) (max) (identity)
+  def depth1[A] (t: Tree[A]) = fold[A,Int](t) (max(_, _) + 1) (a => 1)
+  def map1[A,B] (t: Tree[A])
+                (f: A => B): Tree[B] =
+    fold[A,Tree[B]](t) (Branch(_, _)) (v => Leaf( f(v)))
 }
 
 sealed trait Option[+A] {
 
   // Exercise 7 (4.1)
-
-  // def map[B] (f: A=>B) : Option[B] = ...
+  def map[B] (f: A => B): Option[B] = ???
 
   // Ignore the arrow in default's type this week
   // (it should work (almost) as if it was not there)
 
-  // def getOrElse[B >: A] (default: => B) :B = ...
+  def getOrElse[B >: A] (default: => B): B = ???
 
-  // def flatMap[B] (f: A=>Option[B]) : Option[B] = ...
+  def flatMap[B] (f: A => Option[B]): Option[B] = ???
 
   // Ignore the arrow in ob's type this week
 
-  // def orElse[B >: A] (ob : => Option[B]) : Option[B] = ...
+  def orElse[B >: A] (ob: => Option[B]): Option[B] = ???
 
-  // def filter (f: A => Boolean) : Option[A] = ...
+  def filter (f: A => Boolean): Option[A] = ???
 
 }
 
@@ -107,25 +128,21 @@ object ExercisesOption {
 
   // Remember that mean is implemented in Chapter 4 of the text book
 
-  def mean(xs: Seq[Double]): Option[Double] =
+  def mean (xs: Seq[Double]): Option[Double] =
     if (xs.isEmpty) None
     else Some(xs.sum / xs.length)
 
   // Exercise 8 (4.2)
-
-  // def variance (xs: Seq[Double]) : Option[Double] = ..
+  def variance (xs: Seq[Double]): Option[Double] = ???
 
   // Exercise 9 (4.3)
-
-  // def map2[A,B,C] (ao: Option[A], bo: Option[B]) (f: (A,B) => C) :Option[C] =
+  def map2[A, B, C] (ao: Option[A], bo: Option[B])(f: (A, B) => C): Option[C] = ???
 
   // Exercise 10 (4.4)
-
-  // def sequence[A] (aos: List[Option[A]]) : Option[List[A]] = ...
+  def sequence[A] (aos: List[Option[A]]): Option[List[A]] = ???
 
   // Exercise 11 (4.5)
-
-  // def traverse[A,B] (as: List[A]) (f :A => Option[B]) :Option[List[B]] =
+  def traverse[A, B] (as: List[A])(f: A => Option[B]): Option[List[B]] = ???
 
 }
 
@@ -136,9 +153,9 @@ object ExercisesOption {
 object Tests extends App {
 
   // Exercise 1
-  // val p = new java.awt.Point(0,1) with OrderedPoint
-  // val q = new java.awt.Point(0,2) with OrderedPoint
-  // assert(p < q)
+   val p = new java.awt.Point(0,1) with OrderedPoint
+   val q = new java.awt.Point(0,2) with OrderedPoint
+   assert(p < q)
 
   // Notice how we are using nice infix comparison on java.awt
   // objects that were implemented way before Scala existed :) (And without the
@@ -147,33 +164,33 @@ object Tests extends App {
 
 
   // Exercise 2
-  // assert (Tree.size (Branch(Leaf(1), Leaf(2))) == 3)
+   assert (Tree.size (Branch(Leaf(1), Leaf(2))) == 3)
   // Exercise 3
-  // assert (Tree.maximum (Branch(Leaf(1), Leaf(2))) == 2)
+   assert (Tree.maximum (Branch(Leaf(1), Leaf(2))) == 2)
   // Exercise 4
-  // val t4 = Branch(Leaf(1), Branch(Branch(Leaf(2),Leaf(3)),Leaf(4)))
-  // assert (Tree.depth (t4) == 3)
+   val t4 = Branch(Leaf(1), Branch(Branch(Leaf(2),Leaf(3)),Leaf(4)))
+   assert (Tree.depth (t4) == 3)
   // Exercise 5
-  // val t5 = Branch(Leaf("1"), Branch(Branch(Leaf("2"),Leaf("3")),Leaf("4")))
-  // assert (Tree.map (t4) (_.toString) == t5)
+   val t5 = Branch(Leaf("1"), Branch(Branch(Leaf("2"),Leaf("3")),Leaf("4")))
+   assert (Tree.map (t4) (_.toString) == t5)
 
   // Exercise 6
-  // assert (Tree.size1 (Branch(Leaf(1), Leaf(2))) == 3)
-  // assert (Tree.maximum1 (Branch(Leaf(1), Leaf(2))) == 2)
-  // assert (Tree.depth1 (t4) == 3)
-  // assert (Tree.map1 (t4) (_.toString) == t5)
+   assert (Tree.size1 (Branch(Leaf(1), Leaf(2))) == 3)
+   assert (Tree.maximum1 (Branch(Leaf(1), Leaf(2))) == 2)
+   assert (Tree.depth1 (t4) == 3)
+   assert (Tree.map1 (t4) (_.toString) == t5)
 
   // Exercise 7
-  // assert (Some(1).map (x => x +1) == Some(2))
-  // assert (Some(41).getOrElse(42) == 41)
-  // assert (None.getOrElse(42) == 42)
-  // assert (Some(1).flatMap (x => Some(x+1)) == Some(2))
-  // assert ((None: Option[Int]).flatMap[Int] (x => Some(x+1)) == None)
-  // assert (Some(41).orElse (Some(42)) == Some(41))
-  // assert (None.orElse (Some(42)) == Some(42))
-  // assert (Some(42).filter(_ == 42) == Some(42))
-  // assert (Some(41).filter(_ == 42) == None)
-  // assert ((None: Option[Int]).filter(_ == 42) == None)
+   assert (Some(1).map (x => x +1) == Some(2))
+   assert (Some(41).getOrElse(42) == 41)
+   assert (None.getOrElse(42) == 42)
+   assert (Some(1).flatMap (x => Some(x+1)) == Some(2))
+   assert ((None: Option[Int]).flatMap[Int] (x => Some(x+1)) == None)
+   assert (Some(41).orElse (Some(42)) == Some(41))
+   assert (None.orElse (Some(42)) == Some(42))
+   assert (Some(42).filter(_ == 42) == Some(42))
+   assert (Some(41).filter(_ == 42) == None)
+   assert ((None: Option[Int]).filter(_ == 42) == None)
 
   // Exercise 8
   // assert (ExercisesOption.variance (List(42,42,42)) == Some(0.0))
