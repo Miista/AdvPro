@@ -1,3 +1,5 @@
+import scala.math.max
+
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
 // AUTHOR1:
@@ -169,13 +171,6 @@ object List {
         }
     }
 
-  // ZipWith implemented using for-comprehensions
-  def zipWith1[A,B,C] (f: (A,B)=>C) (l: List[A], r: List[B]): List[C] =
-    for {
-      a <- l
-      b <- r
-    } yield f(a,b)
-
   // Exercise 21
   def hasSubsequence[A](list: List[A], sub: List[A]): Boolean = {
     def inner(innerList: List[A], innerSub: List[A], originalSub: List[A]): Boolean = innerSub match {
@@ -206,7 +201,9 @@ object Exercise7 {
 
   case class SalaryLine(name: String, amount: Integer)
 
-  // def maximumSalary (salaries: List[SalaryLine]) :Integer = ...
+  def maximumSalary (salaries: List[SalaryLine]): Int =
+    if (List.length( salaries ) == 0) -1
+    else List.foldRight1( List.map(salaries) (_.amount), 0 ) (max(_,_))
 
   val test_case = List(SalaryLine("John", 41),
     SalaryLine("Alice", 42),
