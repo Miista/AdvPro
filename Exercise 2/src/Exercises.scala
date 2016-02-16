@@ -136,25 +136,30 @@ object List {
     }
   }
 
-  def concat[A](as: List[List[A]]): List[A] = foldLeft(as, List[A]())((b, a) => append(b, a))
+  def concat[A](as: List[List[A]]): List[A] =
+    foldLeft(as, List[A]())((b, a) => append(b, a))
 
   // Exercise 14
 
-  def map[A, B](a: List[A])(f: A => B): List[B] = foldRight(a, List[B]())((v, acc) => Cons(f(v), acc))
+  def map[A, B](a: List[A])(f: A => B): List[B] =
+    foldRight(a, List[B]())((v, acc) => Cons(f(v), acc))
 
   // Exercise 15 (no coding)
 
   // Exercise 16
 
-  def filter[A](as: List[A])(f: A => Boolean): List[A] = foldLeft(as, List[A]())((acc, v) => if (f(v)) Cons(v, acc) else acc)
+  def filter[A](as: List[A])(f: A => Boolean): List[A] =
+    foldLeft(as, List[A]())((acc, v) => if (f(v)) Cons(v, acc) else acc)
 
   // Exercise 17
 
-  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = foldRight(as, List[B]())((v, acc) => append(f(v), acc))
+  def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] =
+    foldRight(as, List[B]()) ((v, acc) => append(f(v), acc))
 
   // Exercise 18
 
-  def filter1[A](l: List[A])(p: A => Boolean): List[A] = flatMap(l)(v => if (p(v)) List(v) else Nil)
+  def filter1[A](l: List[A])(p: A => Boolean): List[A] =
+    flatMap(l)(v => if (p(v)) List(v) else Nil)
 
   // Exercise 19
 
