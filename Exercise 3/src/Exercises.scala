@@ -143,12 +143,25 @@ sealed trait Option[+A] {
       case Some(v) => v
     }
 
-  def flatMap[B] (f: A => Option[B]): Option[B] = ???
+  def flatMap[B] (f: A => Option[B]): Option[B] =
+    this match {
+      case None => None
+      case Some(v) => f(v)
+    }
+
 
   // Ignore the arrow in ob's type this week
-  def orElse[B >: A] (ob: => Option[B]): Option[B] = ???
+  def orElse[B >: A] (ob: => Option[B]): Option[B] =
+    this match {
+      case None => ob
+      case Some(_) => this
+    }
 
-  def filter (f: A => Boolean): Option[A] = ???
+  def filter (f: A => Boolean): Option[A] =
+    this match {
+      case Some(v) if f(v) => this
+      case _ => None
+    }
 }
 
 case class Some[+A] (get: A) extends Option[A]
@@ -163,7 +176,7 @@ object ExercisesOption {
     else Some(xs.sum / xs.length)
 
   // Exercise 8 (4.2)
-//  def variance (xs: Seq[Double]) : Option[Double] = ???
+  def variance (xs: Seq[Double]) : Option[Double] = ???
 
   // Exercise 9 (4.3)
   /**
@@ -176,32 +189,21 @@ object ExercisesOption {
     * @param f A function that can combine values of type A and B
     * @return Returns the combined value if both values are not-None
     */
-  def map2[A,B,C] (ao: Option[A], bo: Option[B]) (f: (A,B) => C): Option[C] =
+  def map2[A,B,C] (ao: Option[A], bo: Option[B])
+                  (f: (A,B) => C): Option[C] =
     for {
       a <- ao
       b <- bo
     } yield f(a,b)
 
   // Exercise 10 (4.4)
-  def sequence[A] (aos: List[Option[A]]) : Option[List[A]] = {
-    def mapper(a: Option[A], b: Option[List[A]]) =
-      map2(a,b) (_ :: _)
-
-    aos.foldRight[Option[List[A]]](Some(Nil)) (mapper)
-  }
-//  {
-//    def f(item: scala.Option[A]): A = item.get
-//    if (aos.exists(_.isEmpty)) {
-//      None
-//    } else {
-//      Some[List[A]]( for { x <- aos } yield f(x) )
-//    }
-//  }
+  def sequence[A] (as: List[Option[A]]) : Option[List[A]] =
+    as.foldRight[Option[List[A]]] (Some(Nil)) (map2(_, _) (_::_)) // Partial application
 
   // Exercise 11 (4.5)
   def traverse[A,B] (as: List[A]) (f: A => Option[B]): Option[List[B]] = {
     def mapper(item: A, others: Option[List[B]]) =
-      for{
+      for {
         b <- others
         a <- f(item)
       } yield a :: b
@@ -247,30 +249,30 @@ object Tests extends App {
    assert (Some(1).map (x => x +1) == Some(2), "Option1")
    assert (Some(41).getOrElse(42) == 41, "Option2")
    assert (None.getOrElse(42) == 42, "Option3")
-//   assert (Some(1).flatMap (x => Some(x+1)) == Some(2), "Option3")
-//   assert ((None: Option[Int]).flatMap[Int] (x => Some(x+1)) == None, "Option4")
-//   assert (Some(41).orElse (Some(42)) == Some(41), "Option5")
-//   assert (None.orElse (Some(42)) == Some(42))
-//   assert (Some(42).filter(_ == 42) == Some(42))
-//   assert (Some(41).filter(_ == 42) == None)
-//   assert ((None: Option[Int]).filter(_ == 42) == None)
+   assert (Some(1).flatMap (x => Some(x+1)) == Some(2), "Option3")
+   assert ((None: Option[Int]).flatMap[Int] (x => Some(x+1)) == None, "Option4")
+   assert (Some(41).orElse (Some(42)) == Some(41), "Option5")
+   assert (None.orElse (Some(42)) == Some(42))
+   assert (Some(42).filter(_ == 42) == Some(42))
+   assert (Some(41).filter(_ == 42) == None)
+   assert ((None: Option[Int]).filter(_ == 42) == None)
 
   // Exercise 8
-//   assert (ExercisesOption.variance (List(42,42,42)) == Some(0.0))
-//   assert (ExercisesOption.variance (List()) == None)
+   assert (ExercisesOption.variance (List(42,42,42)) == Some(0.0))
+   assert (ExercisesOption.variance (List()) == None)
 
 
   // Exercise 9
-//   assert (ExercisesOption.map2 (Some(42),Some(7)) (_ + _) == Some(49))
-//   assert (ExercisesOption.map2 (Some(42),None) (_ + _) == None)
-//   assert (ExercisesOption.map2 (None: Option[Int],Some(7)) (_ + _) == None)
-//   assert (ExercisesOption.map2 (None: Option[Int],None) (_ + _) == None)
+   assert (ExercisesOption.map2 (Some(42),Some(7)) (_ + _) == Some(49))
+   assert (ExercisesOption.map2 (Some(42),None) (_ + _) == None)
+   assert (ExercisesOption.map2 (None: Option[Int],Some(7)) (_ + _) == None)
+   assert (ExercisesOption.map2 (None: Option[Int],None) (_ + _) == None)
 
   // Exercise 10
-//   assert (ExercisesOption.sequence (List(Some(1), Some(2), Some(42))) == Some(List(1,2,42)))
-//   assert (ExercisesOption.sequence (List(None,    Some(2), Some(42))) == None)
-//   assert (ExercisesOption.sequence (List(Some(1), None,    Some(42))) == None)
-//   assert (ExercisesOption.sequence (List(Some(1), Some(2), None    )) == None)
+   assert (ExercisesOption.sequence (List(Some(1), Some(2), Some(42))) == Some(List(1,2,42)))
+   assert (ExercisesOption.sequence (List(None,    Some(2), Some(42))) == None)
+   assert (ExercisesOption.sequence (List(Some(1), None,    Some(42))) == None)
+   assert (ExercisesOption.sequence (List(Some(1), Some(2), None    )) == None)
 
   // Exercise 11
 //   def f (n: Int) :Option[Int] = if (n%2 == 0) Some(n) else None
