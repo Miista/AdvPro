@@ -206,7 +206,19 @@ object List {
 
   // Exercise 22
 
-  // def pascal (n :Int) : List[Int] = ...
+  def pascal (n: Int): List[Int] = {
+    def row (i: Int, l: List[Int] = List(1)): List[Int] =
+      if (i == 0) l
+      else row (i-1, zipWith[Int, Int, Int] (_ + _) (setHead(l, 0), append(l, List(0))))
+    row(n)
+  }
+
+  // Haskell version
+  //  pas :: Int -> [Int] -> [Int]
+  //  pas 0 l = l
+  //  pas n list = pas (n-1) $ zipWith (+) l r
+  //    where l = 0 : list
+  //  r = list ++ [0]
 
   // a test: pascal (4) = Cons(1,Cons(3,Cons(3,Cons(1,Nil))))
 
