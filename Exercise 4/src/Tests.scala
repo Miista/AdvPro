@@ -20,8 +20,16 @@ object Tests extends App {
 //  assert (l4.tail.headOption() == Some(1), "!= 1")
 //  assert (l4.tail.tail.headOption() == Some(2), "!= 2")
 
-  val l5 = Stream.from(0)
-  assert (l5.headOption() == Some(0), "!= 0")
-  assert (l5.tail.headOption() == Some(1), "!= 1")
-  assert (l5.tail.tail.headOption() == Some(2), "!= 2")
+//  val l5 = Stream.from(0)
+//  assert (l5.headOption() == Some(0), "!= 0")
+//  assert (l5.tail.headOption() == Some(1), "!= 1")
+//  assert (l5.tail.tail.headOption() == Some(2), "!= 2")
+
+  val fs1 = Stream(1,2,3,4)
+  assert (fs1.toList == List(1, 2, 3, 4))
+
+  val fs2 = Stream(1,2,3,4)
+  println(fs2.take(2))
+  assert (fs2.take(2) == Stream(1, 2))
+
 }

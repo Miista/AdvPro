@@ -8,8 +8,7 @@ package fpinscala.laziness
 import Stream._
 
 sealed trait Stream[+A] {
-
-  def headOption () :Option[A] =
+  def headOption (): Option[A] =
     this match {
       case Empty => None
       case Cons(h,t) => Some(h())
@@ -52,6 +51,18 @@ sealed trait Stream[+A] {
       // of ||)
     }
 
+  def toList: List[A] =
+    headOption() match {
+      case None => Nil
+      case Some(v) => v :: tail.toList
+    }
+
+  def take (n: Int): Stream[A] =
+    headOption() match {
+      case None => Empty
+      case Some(v) => cons(v, tail.take(n-1))
+    }
+
   //def find (p :A => Boolean) :Option[A] = this.filter (p).headOption
 }
 
@@ -74,6 +85,13 @@ object Stream {
   // Note 1: ":_*" tells Scala to treat a list as multiple params
   // Note 2: pattern matching with :: does not seem to work with Seq, so we
   //         use a generic function API of Seq
+
+  def constant[A] (a: A): Stream[A] =
+    cons(a, constant(a))
+
+  def to (n: Int): Stream[Int] = ???
+
+  def from (n: Int): Stream[Int] = ???
 }
 
 // vim:tw=0:cc=80:nowrap
