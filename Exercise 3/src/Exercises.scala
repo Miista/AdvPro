@@ -243,7 +243,7 @@ object Tests extends App {
   assert (Tree.size1 (Branch(Leaf(1), Leaf(2))) == 3, "Incorrect size using size1")
   assert (Tree.maximum1 (Branch(Leaf(1), Leaf(2))) == 2)
     assert (Tree.depth1 (t4) == 3, "Incorrect depth using depth1")
-//  assert (Tree.map1 (t4) (_.toString) == t5)
+  assert (Tree.map1 (t4) (_.toString) == t5)
 
   // Exercise 7
    assert (Some(1).map (x => x +1) == Some(2), "Option1")
