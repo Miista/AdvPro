@@ -8,11 +8,15 @@ package fpinscala.laziness
 import Stream._
 
 sealed trait Stream[+A] {
+
   def headOption (): Option[A] =
     this match {
       case Empty => None
       case Cons(h,t) => Some(h())
     }
+
+  def headOption1 (): Option[A] =
+    foldRight[Option[A]] (None) ((a,_) => Some(a))
 
   def tail: Stream[A] =
     this match {
@@ -58,11 +62,29 @@ sealed trait Stream[+A] {
     }
 
   def take (n: Int): Stream[A] =
-    headOption() match {
+    if (n == 0) Empty
+    else headOption() match {
       case None => Empty
       case Some(v) => cons(v, tail.take(n-1))
     }
 
+  def drop (n: Int): Stream[A] =
+    if (n == 0) this
+    else tail.drop(n-1)
+
+  def takeWhile (p: A => Boolean): Stream[A] =
+    headOption() match {
+      case Some(v) if p(v) => cons(v, tail.takeWhile(p))
+      case None | _ => Empty
+    }
+
+  def takeWhile1 (p: A => Boolean): Stream[A] = foldRight[Stream[A]] (Empty) ((a,b) => cons[A](a, b))
+
+  def forAll (p: A => Boolean): Boolean =
+    headOption() match {
+      case None => true
+      case Some(v) => p(v) && tail.forAll(p)
+    }
   //def find (p :A => Boolean) :Option[A] = this.filter (p).headOption
 }
 
@@ -91,7 +113,7 @@ object Stream {
 
   def to (n: Int): Stream[Int] = ???
 
-  def from (n: Int): Stream[Int] = ???
+  def from (n: Int): Stream[Int] = cons[Int](n, from(n+1))
 }
 
 // vim:tw=0:cc=80:nowrap
