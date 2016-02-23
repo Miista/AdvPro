@@ -120,8 +120,9 @@ object Tree {
   def depth1[A] (t: Tree[A]): Int =
     fold[A,Int](t) (max(_, _) + 1) (a => 0)
 
-  def map1[A,B] (t: Tree[A])(f: A=>B): Tree[B] =
-    fold[A,Tree[B]](t) (Branch[B]) (v => Leaf( f(v) ))
+  def map1[A,B] (t: Tree[A])
+                 (f: A => B): Tree[B] =
+    fold[A,Tree[B]] (t) (Branch[B]) (v => Leaf(f(v)))
 }
 
 sealed trait Option[+A] {
