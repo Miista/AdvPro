@@ -85,7 +85,48 @@ sealed trait Stream[+A] {
       case None => true
       case Some(v) => p(v) && tail.forAll(p)
     }
+
+//  Implement map, filter, append, and flatMap
+  def map[B] (f: A => B): Stream[B] =
+    headOption1() match {
+      case None => Empty
+      case Some(v) => cons( f(v), tail.map(f))
+    }
+
+  def filter (p: A => Boolean): Stream[A] =
+    headOption1() match {
+      case None => Empty
+      case Some(v) if p(v) => cons(v, tail.filter(p))
+      case Some(v) => tail.filter(p)
+    }
+
+  def append[B >: A] (that: => Stream[B]): Stream[B] =
+    headOption() match {
+      case None => that
+      case Some(v) => cons(v, tail.append(that))
+    }
+
+  // Exercise 17
+  def flatMap[B >: A] (f: A => Stream[B]): Stream[B] = {
+    foldRight[Stream[B]] (Empty) ((a, b) => b.append(f(a)))
+  }
+
+//  Compute a lazy stream of Fibonacci numbers fibs: 0, 1, 1, 2, 3, 5, 8, and so on.
+//    It can be done with functions available so far. Test it be translating to List a
+//  finite prefix of fibs, or a finite prefix of an infinite suffix.
+//
+//  def fibs
+
   //def find (p :A => Boolean) :Option[A] = this.filter (p).headOption
+
+  def startsWith[B >: A] (that: => Stream[B]): Boolean =
+    that.headOption1() match {
+      case None => true
+      case Some(v) => headOption1() match {
+        case None => true
+        case Some(v1) => v == v1 && tail.startsWith(that.tail)
+      }
+    }
 }
 
 case object Empty extends Stream[Nothing]
@@ -111,7 +152,7 @@ object Stream {
   def constant[A] (a: A): Stream[A] =
     cons(a, constant(a))
 
-  def to (n: Int): Stream[Int] = ???
+  def to (n: Int): Stream[Int] = cons[Int](n, to(n-1))
 
   def from (n: Int): Stream[Int] = cons[Int](n, from(n+1))
 }

@@ -15,10 +15,10 @@ object Tests extends App {
   println(l2.headOption)
   println(l3.headOption)
 
-//  val l4 = Stream.to(2)
-//  assert (l4.headOption() == Some(0), "!= 0")
-//  assert (l4.tail.headOption() == Some(1), "!= 1")
-//  assert (l4.tail.tail.headOption() == Some(2), "!= 2")
+  val l4 = Stream.to(2)
+  assert (l4.headOption() == Some(2), "!= 2")
+  assert (l4.tail.headOption() == Some(1), "!= 1")
+  assert (l4.tail.tail.headOption() == Some(0), "!= 0")
 
   val l5 = Stream.from(0)
   assert (l5.headOption() == Some(0), "!= 0")
@@ -49,4 +49,17 @@ object Tests extends App {
   assert (naturals.headOption1() == Some(0), "headOption1 != 0")
   assert (naturals.drop(5).headOption1() == Some(5), "headOption1 != 5")
   assert (naturals.drop(5).take(5).drop(4).headOption1() == Some(9), "headOption1 != 9")
+
+  naturals.map (_*2).drop (30).take (50).toList
+
+  naturals.drop(42).filter (_%2 ==0).take (30).toList
+
+  Stream(1,2,3).append(Stream(4,5,6))
+  naturals.append (naturals)
+  naturals.take(10).append(naturals).take(20).toList
+
+//  naturals.flatMap (to _).take (100).toList
+//  naturals.flatMap (x =>from (x)).take (100).toList
+
+  assert (Stream(1,2,3).startsWith (Stream(1,2)), "Stream doesn't start with 1,2")
 }
