@@ -98,7 +98,9 @@ object Exercises extends App {
 
   def total(expenses: Array[Expense]): Int = {
     @annotation.tailrec
-    def t(v: Int, list: Array[Expense]): Int = if (list.length == 0) v else t( v + list.head.price, list.tail )
+    def t(value: Int, list: Array[Expense]): Int =
+      if (list.length == 0) value
+      else t( value + list.head.price, list.tail )
     t( expenses.head.price, expenses.tail )
   }
 
@@ -139,19 +141,23 @@ object Exercises extends App {
   assert (power2(3) == 8.0)
 
   // Exercise 8
-  def curry[A,B,C](f: (A,B) => C): A => (B => C) = a => b => f( a, b )
+  def curry[A,B,C](f: (A,B) => C): A => (B => C) =
+    a => b => f( a, b )
 
   // test if it type checks by currying power automatically:
 
-  val power_curried: Double => Int => Double = curry(power)
+  val power_curried: Double => Int => Double =
+    curry(power)
 
   // Exercise 9
-  def uncurry[A,B,C](f: A => B => C): (A, B) => C = (a, b) => f( a )( b )
+  def uncurry[A,B,C](f: A => B => C): (A, B) => C =
+    (a, b) => f( a )( b )
 
   val power_uncurried: (Double,Int) => Double = uncurry( power_curried )
 
   // Exercise 10
-  def compose[A,B,C](f: B => C, g: A => B): A => C = a => f( g( a ) )
+  def compose[A,B,C](f: B => C, g: A => B): A => C =
+    a => f( g( a ) )
 }
 
 object Main {
