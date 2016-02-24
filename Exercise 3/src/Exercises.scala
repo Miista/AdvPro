@@ -177,7 +177,8 @@ object ExercisesOption {
     else Some(xs.sum / xs.length)
 
   // Exercise 8 (4.2)
-  def variance (xs: Seq[Double]) : Option[Double] = ???
+  def variance (xs: Seq[Double]) : Option[Double] =
+    mean(xs).flatMap[Double]((m) => Some( xs.map[Double, Seq[Double]]((x) => math.pow(x - m, 2)).fold[Double](0.0)(_ + _)) )
 
   // Exercise 9 (4.3)
   /**
@@ -259,8 +260,9 @@ object Tests extends App {
    assert ((None: Option[Int]).filter(_ == 42) == None)
 
   // Exercise 8
-//   assert (ExercisesOption.variance (List(42,42,42)) == Some(0.0))
-//   assert (ExercisesOption.variance (List()) == None)
+   assert (ExercisesOption.variance (List(42,42,42)) == Some(0.0), "variance1")
+   assert (ExercisesOption.variance (List()) == None, "variance2")
+   assert (ExercisesOption.variance (List(10,20,30)) == Some(200.0), "variance3")
 
 
   // Exercise 9
