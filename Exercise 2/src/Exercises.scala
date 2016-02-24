@@ -163,13 +163,15 @@ object List {
 
   // Exercise 16
   def filter[A](as: List[A])(f: A => Boolean): List[A] = {
-    def fn(acc: List[A], value: A) = if (f(value)) Cons[A](value, acc) else acc
+    def fn(acc: List[A], value: A) =
+      if (f(value)) Cons[A](value, acc) else acc
     foldLeft( as, List[A]() ) (fn)
   }
 
   // Exercise 17
   def flatMap[A, B](as: List[A])(f: A => List[B]): List[B] = {
-    def fn(value: A, acc: List[B]) = append( f(value), acc )
+    def fn(value: A, acc: List[B]) =
+      append( f(value), acc )
     foldRight(as, List[B]()) (fn)
   }
 
