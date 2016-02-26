@@ -3,8 +3,8 @@ import scala.math.{max, pow}
 
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
-// AUTHOR1:
-// AUTHOR2:
+// AUTHOR1: Ivan Naumovski (inau@itu.dk)
+// AUTHOR2: Søren Palmund (spal@itu.dk)
 // Group number:
 //
 // Write names and ITU email addresses of both group members that contributed to
