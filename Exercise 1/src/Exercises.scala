@@ -140,7 +140,7 @@ object Exercises extends App {
   def isSorted[A](as: Array[A], ordered: (A,A) => Boolean): Boolean =
     as.length match {
       case 0 | 1 => true
-      case _ => ordered( as.head, as.tail.head ) && isSorted( as.tail, ordered )
+      case _ => ordered(as.head, as.tail.head) && isSorted(as.tail, ordered)
     }
 
   // some tests (uncomment)
@@ -154,29 +154,30 @@ object Exercises extends App {
   assert( isSorted( Array( "not to be", "or", "to be" ), (a: String, b: String) => a <= b ) )
 
   // Exercise 7: a curried version of solution to exercise 3
-  def power1(x: Double)(n: Int): Double = power(x, n)
+  def power1 (x: Double)
+             (n: Int): Double =
+    power(x, n)
 
   val power2 = power1(2) _
   assert (power2(3) == 8.0)
 
   // Exercise 8
-  def curry[A,B,C](f: (A,B) => C): A => (B => C) =
-    a => b => f( a, b )
+  def curry[A,B,C] (f: (A,B) => C): A => (B => C) =
+    a => b => f (a, b)
 
   // test if it type checks by currying power automatically:
-
   val power_curried: Double => Int => Double =
-    curry(power)
+    curry (power)
 
   // Exercise 9
-  def uncurry[A,B,C](f: A => B => C): (A, B) => C =
-    (a, b) => f( a )( b )
+  def uncurry[A,B,C] (f: A => B => C): (A,B) => C =
+    (a,b) => f (a)(b)
 
   val power_uncurried: (Double,Int) => Double = uncurry( power_curried )
 
   // Exercise 10
   def compose[A,B,C](f: B => C, g: A => B): A => C =
-    a => f( g( a ) )
+    a => f (g (a))
 }
 
 object Main {
