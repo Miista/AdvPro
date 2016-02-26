@@ -1,5 +1,5 @@
 import java.awt.Point
-import scala.math.max
+import scala.math.{max, pow}
 
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
@@ -41,7 +41,7 @@ import scala.math.max
  * reimplement them in my subclass.  This is not a problem if I mix in a trait
  * construction time. */
 
-trait OrderedPoint extends java.awt.Point with scala.math.Ordered[Point] {
+trait OrderedPoint extends java.awt.Point with Ordered[Point] {
   def compare (that :java.awt.Point): Int = {
     if (this.x < that.x || (this.x == that.x && this.y < that.y)) {
       return -1
@@ -178,7 +178,11 @@ object ExercisesOption {
 
   // Exercise 8 (4.2)
   def variance (xs: Seq[Double]) : Option[Double] =
-    mean(xs).flatMap[Double]((m) => Some( xs.map[Double, Seq[Double]]((x) => math.pow(x - m, 2)).fold[Double](0.0)(_ + _)) )
+    for {
+      m <- mean(xs)
+      ys = xs.map(x => pow(x - m, 2))
+      v <- mean(ys)
+    } yield v
 
   // Exercise 9 (4.3)
   /**
@@ -262,7 +266,7 @@ object Tests extends App {
   // Exercise 8
    assert (ExercisesOption.variance (List(42,42,42)) == Some(0.0), "variance1")
    assert (ExercisesOption.variance (List()) == None, "variance2")
-   assert (ExercisesOption.variance (List(10,20,30)) == Some(200.0), "variance3")
+   assert (ExercisesOption.variance (List(10,20,30)) == Some(66.66666666666667), "variance3")
 
 
   // Exercise 9
