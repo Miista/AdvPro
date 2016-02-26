@@ -180,8 +180,15 @@ object ExercisesOption {
   def variance (xs: Seq[Double]) : Option[Double] =
     for {
       m <- mean(xs)
-      ys = xs.map(x => pow(x - m, 2))
+      ys = xs.map[Double, Seq[Double]](x => pow(x - m, 2))
       v <- mean(ys)
+    } yield v
+
+  def variance2(xs: Seq[Double]): Option[Double] =
+    for {
+      m <- mean(xs)
+      y <- Some( for { x <- xs } yield pow(x-m, 2) )
+      v <- mean( y )
     } yield v
 
   // Exercise 9 (4.3)
@@ -267,6 +274,10 @@ object Tests extends App {
    assert (ExercisesOption.variance (List(42,42,42)) == Some(0.0), "variance1")
    assert (ExercisesOption.variance (List()) == None, "variance2")
    assert (ExercisesOption.variance (List(10,20,30)) == Some(66.66666666666667), "variance3")
+
+   assert (ExercisesOption.variance2 (List(42,42,42)) == Some(0.0), "variance1")
+   assert (ExercisesOption.variance2 (List()) == None, "variance2")
+   assert (ExercisesOption.variance2 (List(10,20,30)) == Some(66.66666666666667), "variance3")
 
 
   // Exercise 9
