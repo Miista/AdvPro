@@ -1,3 +1,5 @@
+import scala.annotation.tailrec
+
 // Advanced Programming, Exercises by A. Wąsowski, IT University of Copenhagen
 //
 // AUTHOR1: Ivan Naumovski (inau@itu.dk)
@@ -36,12 +38,29 @@
 object Exercises extends App {
 
   // Exercise 3
-  def power(x: Double, n: Int): Double =
+  def power(x: Double, n: Int): Double = {
+    def isEven(i: Int) = i % 2 == 0
     n match {
       case 0 => 1
-      case n if n < 0 => 1 / power( x, -n )
-      case _ => if (n % 2 == 0) power( x, n / 2 ) * power( x, n / 2 ) else x * power( x, n - 1 )
+      case _ if n < 0 => 1 / power( x, -n )
+      case _ if isEven(n) => power( x, n / 2 ) * power( x, n / 2 )
+      case _ => x * power( x, n - 1 )
     }
+  }
+
+  /*
+   * == Calls in tail-position ==
+   *
+   * We don't have any calls in tail position.
+   *
+   * == Input parameters ==
+   *
+   * Really large numbers will make the stack grow.
+   *
+   * == Non-tail recursion ==
+   *
+   * This won't be problematic since the runtime is logarithmic.
+   */
 
   // A few tests, uncomment when your implementation is ready.
 
@@ -64,9 +83,9 @@ object Exercises extends App {
   def fib(n: Int): Int = {
     @annotation.tailrec
     def go(count: Int, prev: Int, acc: Int): Int =
-      if (n == 0) prev
+      if (count == 0) prev
       else go(count - 1, acc, prev + acc)
-    go( n, 1, 0 )
+    go( n, 0, 1 )
   }
 
 
