@@ -79,4 +79,7 @@ object Tests extends App {
 
   println(Stream.fibs.take(10).toList)
   assert (Stream.fibs.take(2).toList == List(0,1), "fibs is not working")
+
+  assert (unfold[Int,Int](1)(s => Some((s, s+1))).take(5).toList == List(1,2,3,4,5))
+  assert (unfold1[Int,Int](1)(s => Some((s, s+1))).take(5).toList == List(1,2,3,4,5))
 }

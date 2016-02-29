@@ -142,6 +142,25 @@ case class Cons[+A](h: ()=>A, t: ()=>Stream[A]) extends Stream[A]
 
 
 object Stream {
+  def unfold[A, S] (z: S)
+                   (f: S => Option[(A, S)]): Stream[A] =
+    f(z) match {
+      case None => Empty
+      case Some((a:A,s:S)) => cons[A] (a, unfold[A,S](s) (f))
+    }
+
+  def unfold1[A, S] (z: S)
+                   (f: S => Option[(A, S)]): Stream[A] =
+    ( for {
+        x <- f(z)
+        xs = cons [A](x._1, unfold1 [A, S](x._2)(f))
+      } yield xs
+    ).getOrElse(Empty)
+
+  def unfold2[A,S] (z: S)
+                   (f: S => Option[(A,S)]): Stream[A] =
+    f(z).fold[Stream[A]] (Empty) (p => cons(p._1, unfold(p._2) (f)))
+
   def fibs: Stream[Int] = {
     def in(p: Int, c: Int): Stream[Int] =
       cons (p, in(c, p+c))
