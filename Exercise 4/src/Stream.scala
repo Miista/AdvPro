@@ -5,7 +5,7 @@
 
 package fpinscala.laziness
 
-import Stream._
+import fpinscala.laziness.Stream._
 
 sealed trait Stream[+A] {
 
@@ -56,9 +56,10 @@ sealed trait Stream[+A] {
     }
 
   def toList: List[A] =
-    headOption() match {
-      case None => Nil
-      case Some(v) => v :: tail.toList
+    this match {
+      case Cons(h,t) => h() :: t().toList
+      case Empty => Nil
+
     }
 
   def take (n: Int): Stream[A] =
