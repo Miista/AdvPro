@@ -63,10 +63,10 @@ sealed trait Stream[+A] {
     }
 
   def take (n: Int): Stream[A] =
-    if (n == 0) Empty
-    else headOption() match {
-      case None => Empty
-      case Some(v) => cons(v, tail.take(n-1))
+    if (n <= 0) empty[A]
+    else this match {
+      case Cons(h,t) => cons[A](h(), t().take(n-1))
+      case Empty => empty[A]
     }
 
   def drop (n: Int): Stream[A] =
@@ -74,24 +74,25 @@ sealed trait Stream[+A] {
     else tail.drop(n-1)
 
   def takeWhile (p: A => Boolean): Stream[A] =
-    headOption() match {
-      case Some(v) if p(v) => cons(v, tail.takeWhile(p))
-      case None | _ => Empty
+    this match {
+      case Cons(h,t) if p(h()) => cons(h(), t().takeWhile(p))
+      case Cons(_,_) => empty[A]
+      case Empty => empty[A]
     }
 
   def takeWhile1 (p: A => Boolean): Stream[A] = foldRight[Stream[A]] (Empty) ((a,b) => cons[A](a, b))
 
   def forAll (p: A => Boolean): Boolean =
-    headOption() match {
-      case None => true
-      case Some(v) => p(v) && tail.forAll(p)
+    this match {
+      case Cons(h,t) => p(h()) && t().forAll(p)
+      case Empty => true
     }
 
 //  Implement map, filter, append, and flatMap
   def map[B] (f: A => B): Stream[B] =
-    headOption1() match {
-      case None => Empty
-      case Some(v) => cons( f(v), tail.map(f))
+    this match {
+      case Cons(h,t) => cons[B] (f(h()), t().map(f))
+      case Empty => empty[B]
     }
 
   def filter (p: A => Boolean): Stream[A] =
