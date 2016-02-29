@@ -96,17 +96,14 @@ sealed trait Stream[+A] {
     }
 
   def filter (p: A => Boolean): Stream[A] =
-    headOption1() match {
-      case None => Empty
-      case Some(v) if p(v) => cons(v, tail.filter(p))
-      case Some(v) => tail.filter(p)
+    this match {
+      case Cons(h,t) if p(h()) => cons(h(), t().filter(p))
+      case Cons(_,t) => t().filter(p)
+      case Empty => empty[A]
     }
 
   def append[B >: A] (that: => Stream[B]): Stream[B] =
-    headOption() match {
-      case None => that
-      case Some(v) => cons(v, tail.append(that))
-    }
+    foldRight[Stream[B]] (that) (cons (_,_))
 
   // Exercise 17
   def flatMap[B >: A] (f: A => Stream[B]): Stream[B] = {
