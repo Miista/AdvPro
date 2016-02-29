@@ -80,7 +80,8 @@ sealed trait Stream[+A] {
       case Empty => empty[A]
     }
 
-  def takeWhile1 (p: A => Boolean): Stream[A] = foldRight[Stream[A]] (Empty) ((a,b) => cons[A](a, b))
+  def takeWhile1 (p: A => Boolean): Stream[A] =
+    foldRight[Stream[A]] (Empty) ((a,b) => cons[A](a, b))
 
   def forAll (p: A => Boolean): Boolean =
     this match {
@@ -109,6 +110,19 @@ sealed trait Stream[+A] {
   def flatMap[B >: A] (f: A => Stream[B]): Stream[B] = {
     foldRight[Stream[B]] (Empty) ((a, b) => b.append(f(a)))
   }
+
+  def map1[B] (f: A => B): Stream[B] =
+    foldRight[Stream[B]] (Empty) ((a,t) => cons[B](f(a), t))
+
+  def filter1 (p: A => Boolean): Stream[A] =
+    foldRight[Stream[A]] (Empty) ((v,t) => if (p(v)) cons(v, t) else t)
+
+  def append1[B >: A] (that: => Stream[B]): Stream[B] =
+    foldRight[Stream[B]] (that) (cons(_,_))
+
+  // Exercise 17
+  def flatMap1[B >: A] (f: A => Stream[B]): Stream[B] =
+    foldRight[Stream[B]] (Empty) ((h,t) => f(h).append(t))
 
 //  Compute a lazy stream of Fibonacci numbers fibs: 0, 1, 1, 2, 3, 5, 8, and so on.
 //    It can be done with functions available so far. Test it be translating to List a

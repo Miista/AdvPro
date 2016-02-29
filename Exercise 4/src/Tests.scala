@@ -15,10 +15,10 @@ object Tests extends App {
   println(l2.headOption)
   println(l3.headOption)
 
-  val l4 = Stream.to(2)
-  assert (l4.headOption() == Some(2), "!= 2")
-  assert (l4.tail.headOption() == Some(1), "!= 1")
-  assert (l4.tail.tail.headOption() == Some(0), "!= 0")
+  val l4 = Stream.to(3)
+  assert (l4.headOption() == Some(3), "!= 3")
+  assert (l4.tail.headOption() == Some(2), "!= 2")
+  assert (l4.tail.tail.headOption() == Some(1), "!= 1")
 
   val l5 = Stream.from(0)
   assert (l5.headOption() == Some(0), "!= 0")
@@ -62,4 +62,18 @@ object Tests extends App {
 //  naturals.flatMap (x =>from (x)).take (100).toList
 
   assert (Stream(1,2,3).startsWith (Stream(1,2)), "Stream doesn't start with 1,2")
+
+  assert (Stream(1,2,3).map1(i => i*2).toList == List(2,4,6), "map1 doesn't work")
+  naturals.map (_*2).drop (30).take (50).toList
+
+  assert (Stream(1,2,3,4).filter1(i => i%2 == 0).toList == List(2,4), "filter1 doesn't work")
+  naturals.drop(42).filter (_%2 ==0).take (30).toList
+
+  assert (Stream(1,2,3).append1(Stream(4,5,6)).toList == List(1,2,3,4,5,6), "append1 doesn't work")
+  naturals.append (naturals)
+  naturals.take(10).append(naturals).take(20).toList
+
+  assert (Stream(1,2).flatMap1(i => to(i)).toList == List(1,2,1), "flatMap1 doesn't work")
+  naturals.flatMap1 (to _).take (100).toList
+  naturals.flatMap1 (x =>from (x)).take (100).toList
 }
