@@ -76,4 +76,7 @@ object Tests extends App {
   assert (Stream(1,2).flatMap1(i => to(i)).toList == List(1,2,1), "flatMap1 doesn't work")
   naturals.flatMap1 (to _).take (100).toList
   naturals.flatMap1 (x =>from (x)).take (100).toList
+
+  println(Stream.fibs.take(10).toList)
+  assert (Stream.fibs.take(2).toList == List(0,1), "fibs is not working")
 }

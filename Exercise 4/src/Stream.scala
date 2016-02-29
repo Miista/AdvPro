@@ -124,11 +124,6 @@ sealed trait Stream[+A] {
   def flatMap1[B >: A] (f: A => Stream[B]): Stream[B] =
     foldRight[Stream[B]] (Empty) ((h,t) => f(h).append(t))
 
-//  Compute a lazy stream of Fibonacci numbers fibs: 0, 1, 1, 2, 3, 5, 8, and so on.
-//    It can be done with functions available so far. Test it be translating to List a
-//  finite prefix of fibs, or a finite prefix of an infinite suffix.
-//
-//  def fibs
 
   //def find (p :A => Boolean) :Option[A] = this.filter (p).headOption
 
@@ -147,6 +142,12 @@ case class Cons[+A](h: ()=>A, t: ()=>Stream[A]) extends Stream[A]
 
 
 object Stream {
+  def fibs: Stream[Int] = {
+    def in(p: Int, c: Int): Stream[Int] =
+      cons (p, in(c, p+c))
+    in(0,1)
+  }
+
   def empty[A]: Stream[A] = Empty
 
   def cons[A] (hd: => A, tl: => Stream[A]) :Stream[A] = {
