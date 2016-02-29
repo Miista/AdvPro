@@ -82,4 +82,9 @@ object Tests extends App {
 
   assert (unfold[Int,Int](1)(s => Some((s, s+1))).take(5).toList == List(1,2,3,4,5))
   assert (unfold1[Int,Int](1)(s => Some((s, s+1))).take(5).toList == List(1,2,3,4,5))
+
+  assert (Stream(1,2,3).map2(i => i*2).toList == List(2,4,6), "map2 doesn't work")
+  naturals.map2 (_*2).drop (30).take (50).toList
+
+//  assert (Stream(1,2,3).take2(2).toList == List(1, 2), "take2 doesn't work")
 }

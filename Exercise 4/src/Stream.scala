@@ -135,6 +135,18 @@ sealed trait Stream[+A] {
         case Some(v1) => v == v1 && tail.startsWith(that.tail)
       }
     }
+
+  def map2[B] (f: A => B): Stream[B] =
+    unfold (this) {
+      case Cons(h, t) => Some(f(h()), t())
+      case Empty => None
+    }
+
+  def take2 (n: Int): Stream[A] = ???
+  def takeWhile2 (p: A => Boolean): Stream[A] = ???
+  def zipWith[A,B,C] (s2: Stream[B])
+                   (f: (A,B) => C): Stream[C] = ???
+  def zipAll[B] (s2: Stream[B]): Stream[(Option[A],Option[B])] = ???
 }
 
 case object Empty extends Stream[Nothing]
