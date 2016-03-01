@@ -190,6 +190,15 @@ sealed trait Stream[+A] {
         }
       }
     })
+
+  // Exercise 15
+  def tails: Stream[Stream[A]] =
+    unfold[Stream[A],Stream[A]] (this) (s => {
+      s match {
+        case Empty => None
+        case _ => Some( (s, s.tail) )
+      }
+    })
 }
 
 case object Empty extends Stream[Nothing]

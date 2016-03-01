@@ -61,7 +61,7 @@ object Tests extends App {
 //  naturals.flatMap (to _).take (100).toList
 //  naturals.flatMap (x =>from (x)).take (100).toList
 
-  assert (Stream(1,2,3).startsWith (Stream(1,2)), "Stream doesn't start with 1,2")
+  assert (Stream(1,2,3).startsWith (Stream(1,2)), "startsWith doesn't work")
 
   assert (Stream(1,2,3).map1(i => i*2).toList == List(2,4,6), "map1 doesn't work")
   naturals.map (_*2).drop (30).take (50).toList
@@ -97,4 +97,9 @@ object Tests extends App {
   assert (naturals.zipAll (fibs).take(100).toList.length == 100, "zipAll doesn't work")
 //  val s2 = Stream(5,6,7,8,9,10)
 //  assert (s1.zipAll[Int](s1).toList == List(2,4,6), "zipWith doesn't work")
+
+  {
+    val fs = Stream(1,2,3).tails.map(identity).toList.flatMap(s => s.toList)
+    assert (fs == List(1,2,3,2,3,3), "tails doesn't work")
+  }
 }
