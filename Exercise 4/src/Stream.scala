@@ -137,16 +137,59 @@ sealed trait Stream[+A] {
     }
 
   def map2[B] (f: A => B): Stream[B] =
-    unfold (this) {
+    unfold[B,Stream[A]] (this) {
       case Cons(h, t) => Some(f(h()), t())
       case Empty => None
     }
 
-  def take2 (n: Int): Stream[A] = ???
-  def takeWhile2 (p: A => Boolean): Stream[A] = ???
-  def zipWith[A,B,C] (s2: Stream[B])
-                   (f: (A,B) => C): Stream[C] = ???
-  def zipAll[B] (s2: Stream[B]): Stream[(Option[A],Option[B])] = ???
+  def take2 (n: Int): Stream[A] =
+    unfold[A,Stream[A]] (this) (s => {
+      if (n <= 0) None
+      else s match {
+        case Cons(h,t) => Some(h(), t().take2(n-1))
+        case Empty => None
+      }
+    })
+
+  def takeWhile2 (p: A => Boolean): Stream[A] =
+    unfold[A,Stream[A]] (this) (s => {
+      s match {
+        case Cons(h,t) if p(h()) => Some(h(), t().takeWhile2(p))
+        case Cons(_,t) => None
+        case Empty => None
+      }
+    })
+
+  def zipWith[B,C] (s2: Stream[B])
+                   (f: (A,B) => C): Stream[C] =
+    unfold ((this,s2)) (s => {
+      s match {
+        case (Cons(h1,t1), Cons(h2,t2)) => Some (f(h1(), h2()), (t1(),t2()))
+        case (Empty,_) | (_,Empty) => None
+      }
+    })
+
+  def zipAll[B] (s2: Stream[B]): Stream[(Option[A],Option[B])] =
+    unfold[(Option[A],Option[B]), (Stream[A],Stream[B])] ((this,s2)) (s => {
+      s match {
+        case (Empty,Empty) => None
+        case (Cons(h1,t1), Cons(h2,t2)) => {
+          val o1 = Some(h1())
+          val o2 = Some(h2())
+          Some((o1,o2), (t1(),t2()))
+        }
+        case (Empty, Cons(h,t)) => {
+          val o1 = None
+          val o2 = Some(h())
+          Some((o1,o2), (Empty,t()))
+        }
+        case (Cons(h,t), Empty) => {
+          val o1 = Some(h())
+          val o2 = None
+          Some((o1,o2), (t(),Empty))
+        }
+      }
+    })
 }
 
 case object Empty extends Stream[Nothing]
@@ -158,7 +201,7 @@ object Stream {
                    (f: S => Option[(A, S)]): Stream[A] =
     f(z) match {
       case None => Empty
-      case Some((a:A,s:S)) => cons[A] (a, unfold[A,S](s) (f))
+      case Some((a,s)) => cons[A] (a, unfold[A,S](s) (f))
     }
 
   def unfold1[A, S] (z: S)

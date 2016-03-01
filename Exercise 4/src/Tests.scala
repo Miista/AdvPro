@@ -86,5 +86,15 @@ object Tests extends App {
   assert (Stream(1,2,3).map2(i => i*2).toList == List(2,4,6), "map2 doesn't work")
   naturals.map2 (_*2).drop (30).take (50).toList
 
-//  assert (Stream(1,2,3).take2(2).toList == List(1, 2), "take2 doesn't work")
+  assert (Stream(1,2,3).take2(2).toList == List(1, 2), "take2 doesn't work")
+  assert (Stream(1).take2(2).toList == List(1), "take2 doesn't work")
+
+  assert (naturals.takeWhile2(_<5).toList == List(0,1,2,3,4), "takeWhile2 doesn't work")
+
+  val s1 = Stream(1,2,3)
+  assert (s1.zipWith[Int,Int](s1)(_+_).toList == List(2,4,6), "zipWith doesn't work")
+
+  assert (naturals.zipAll (fibs).take(100).toList.length == 100, "zipAll doesn't work")
+//  val s2 = Stream(5,6,7,8,9,10)
+//  assert (s1.zipAll[Int](s1).toList == List(2,4,6), "zipWith doesn't work")
 }
