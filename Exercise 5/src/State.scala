@@ -27,19 +27,32 @@ object RNG {
   }
 
   // Exercise 3 (CB 6.3)
+  def intDouble(rng: RNG): ((Int, Double), RNG) = {
+    val t = (nonNegativeInt(rng), double(rng))
 
-  // def intDouble(rng: RNG): ((Int, Double), RNG) = ???
+    ((t._1._1, t._2._1), t._1._2)
+  }
 
-  // def doubleInt(rng: RNG): ((Double, Int), RNG) = ???
+  def doubleInt(rng: RNG): ((Double, Int), RNG) = {
+    val t = (nonNegativeInt(rng), double(rng))
 
-  // def double3(rng: RNG): ((Double, Double, Double), RNG) = ???
+    ((t._2._1, t._1._1), t._1._2)
+  }
+
+  def double3(rng: RNG): ((Double, Double, Double), RNG) = {
+    (for {
+      d1: (Double, RNG) <- Some(double(rng))
+      d2: (Double, RNG) <- Some(double(d1._2))
+      d3: (Double, RNG) <- Some(double(d2._2))
+    } yield ((d1._1,d2._1,d3._1), d3._2)).get
+  }
 
   // def boolean(rng: RNG): (Boolean, RNG) =
   //  rng.nextInt match { case (i,rng2) => (i%2==0,rng2) }
 
   // Exercise 4 (CB 6.4)
-
-  // def ints(count: Int)(rng: RNG): (List[Int], RNG) =
+  def ints (count: Int)
+           (rng: RNG): (List[Int], RNG) = ???
 
   // There is something terribly repetitive about passing the RNG along
   // every time. What could we do to eliminate some of this duplication
