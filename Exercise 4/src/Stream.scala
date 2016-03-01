@@ -197,7 +197,13 @@ object Stream {
   def constant[A] (a: A): Stream[A] =
     cons(a, constant(a))
 
-  def to (n: Int): Stream[Int] = if (n <= 0) Empty else cons[Int](n, to(n-1))
+  def to (n: Int): Stream[Int] = {
+    def go(in: Int, l: Int): Stream[Int] =
+      if (in > l) Empty
+      else cons[Int](in, go(in+1, l))
+    go(1, n)
+  }
+//    if (n <= 0) Empty else cons[Int](n, to(n-1))
 
   def from (n: Int): Stream[Int] = cons[Int](n, from(n+1))
 }
