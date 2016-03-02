@@ -164,12 +164,18 @@ import State._
 case class State[S, +A](run: S => (A, S)) {
 
   // Exercise 10 (6.10)
+  def map[B] (f: A => B): State[S, B] =
+    ???
 
-  // def map[B](f: A => B): State[S, B] = ???
+  def map2[B,C] (sb: State[S, B])
+                (f: (A, B) => C): State[S, C] =
+    ???
 
-  // def map2[B,C](sb: State[S, B])(f: (A, B) => C): State[S, C] = ???
-
-  // def flatMap[B](f: A => State[S, B]): State[S, B] = State(s => ???
+  def flatMap[B] (f: A => State[S, B]): State[S, B] =
+    State[S,B] ((s: S) => {
+      val (x: A, r: S) = run(s)
+      f (x).run(r)
+    })
 
 }
 
