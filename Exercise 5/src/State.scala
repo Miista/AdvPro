@@ -122,7 +122,8 @@ object RNG {
   }
 
 
-  // def _ints(count: Int): Rand[List[Int]] = ???
+  def _ints(count: Int): Rand[List[Int]] =
+    sequence[Int](List.fill (count)(int))
 
   // Exercise 8 (6.8)
   def flatMap[A,B] (f: Rand[A])
