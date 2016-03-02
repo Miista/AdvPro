@@ -128,9 +128,9 @@ object RNG {
   def flatMap[A,B] (f: Rand[A])
                    (g: A => Rand[B]): Rand[B] =
     rng => {
-      val (x,r) = f(rng)
-      val (x1,r1) = g(x)(r)
-      (x1, r1)
+      val (x,r) = f (rng)
+      val (x1,r1) = g (x)(r)
+      (x1, r1) // This is just stupid, as we might as well just return g(x)(r)
     }
 
   def nonNegativeLessThan(n: Int): Rand[Int] =
