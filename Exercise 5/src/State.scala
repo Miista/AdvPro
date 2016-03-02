@@ -28,15 +28,17 @@ object RNG {
 
   // Exercise 3 (CB 6.3)
   def intDouble(rng: RNG): ((Int, Double), RNG) = {
-    val t = (nonNegativeInt(rng), double(rng))
+    val (i, r) = nonNegativeInt (rng)
+    val (d, r2) = this.double (r)
+    val result = (i, d)
 
-    ((t._1._1, t._2._1), t._1._2)
+    (result, r2)
   }
 
   def doubleInt(rng: RNG): ((Double, Int), RNG) = {
-    val t = (nonNegativeInt(rng), double(rng))
-
-    ((t._2._1, t._1._1), t._1._2)
+    val (values, r) = intDouble(rng)
+    val (i,d) = values
+    ((d,i),r)
   }
 
   def double3(rng: RNG): ((Double, Double, Double), RNG) = {

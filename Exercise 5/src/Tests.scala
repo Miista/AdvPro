@@ -16,10 +16,10 @@ object Tests extends App {
   assert (RNG.double(rng) == (16159453d,Simple(1059025964525L)), "RNG.double doesn't work")
 
   // intDouble
-  assert (RNG.intDouble(rng) == ((16159453,16159453d),Simple(1059025964525L)), "RNG.intDouble doesn't work")
+  assert (RNG.intDouble(rng) == ((16159453, 1.281479696E9), Simple(197491923327988L)), "RNG.intDouble doesn't work")
 
   // doubleInt
-  assert (RNG.doubleInt(rng) == ((16159453d, 16159453),Simple(1059025964525L)), "RNG.doubleInt doesn't work")
+assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L)), "RNG.doubleInt doesn't work")
 
   // ints
   assert (RNG.ints(0)(rng) == (List(), Simple(42L)), "RNG.ints doesn't work")
