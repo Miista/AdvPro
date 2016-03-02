@@ -34,7 +34,6 @@ object Tests extends App {
 
   // sequence
   val lr = List( RNG.int, RNG.int, RNG.int )
-  println( RNG.sequence (lr)(rng) )
 
   // flatMap
   val f1: RNG.Rand[Int] = _.nextInt
@@ -45,4 +44,7 @@ object Tests extends App {
 
   val flatM: Rand[Double] = RNG.flatMap[Int, Double] (f1)(i => g1)
   assert (flatM(rng) == (-1.281479697E9,Simple(197491923327988L)))
+
+  // nonNegativeLessThan
+  assert (RNG.nonNegativeLessThan(2)(rng) == (1,Simple(1059025964525L)), "nonNegativeLessThan doesn't work")
 }
