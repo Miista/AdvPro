@@ -54,14 +54,14 @@ object RNG {
 
   // Exercise 4 (CB 6.4)
   def ints (count: Int)
-           (rng: RNG): (List[Int], RNG) = {
-    1.to(count).foldLeft[(List[Int],RNG)] ((List.empty[Int], rng)) ((in,_) => {
-      val (list,rng_) = in
-      val (i,r) = rng_.nextInt
-      (list :+ i, r)
-    })
-
-  }
+           (rng: RNG): (List[Int], RNG) =
+    if (count == 0) // we should produce NO random ints
+      (List.empty[Int], rng)
+    else {
+      val (x, r) = rng.nextInt
+      val (xs, r1) = ints(count-1)(r)
+      (x :: xs, r1)
+    }
 
   // There is something terribly repetitive about passing the RNG along
   // every time. What could we do to eliminate some of this duplication
