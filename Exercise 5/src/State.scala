@@ -142,10 +142,21 @@ object RNG {
     }
 
   // Exercise 9 (6.9)
+  def _map[A,B] (s: Rand[A])
+                (f: A => B): Rand[B] =
+    flatMap[A,B] (s)(a => unit[B] (f (a)))
 
-  // def _map[A,B](s: Rand[A])(f: A => B): Rand[B] =
 
-  // def _map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+  def _map2[A,B,C] (ra: Rand[A], rb: Rand[B])
+                   (f: (A, B) => C): Rand[C] =
+//    flatMap[A,C] (ra) (a => map(rb)(b => f(a,b)))
+    flatMap[(A,B),C] (rng => {
+      val (i1,r1) = ra(rng)
+      val (i2,r2) = rb(r1)
+      ((i1,i2), r2)
+    }) ((tuple: (A, B)) => {
+      r => (f (tuple._1, tuple._2),r)
+    })
 }
 
 import State._

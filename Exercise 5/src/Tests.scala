@@ -49,4 +49,8 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
 
   // nonNegativeLessThan
   assert (RNG.nonNegativeLessThan(2)(rng) == (1,Simple(1059025964525L)), "nonNegativeLessThan doesn't work")
+
+  // _map2
+  val _rngMap2 = RNG._map2 (RNG.int, RNG.int) (_+_)
+  assert (_rngMap2 (rng) == (-1265320244,Simple(197491923327988L)), "map2 doesn't work")
 }
