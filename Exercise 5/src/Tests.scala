@@ -23,11 +23,11 @@ object Tests extends App {
 
   // ints
   assert (RNG.ints(3)(rng) == (List(16159453,-1281479697 ,-340305902), Simple(259172689157871L)), "RNG.ints doesn't work")
-//  val e = rng.nextInt
-//  val e1 = e._2.nextInt
-//  val e2 = e1._2.nextInt
-//  println(e._1)
-//  println(e1._1)
-//  println(e2._1)
-//  println(e2._2)
+
+  // _double
+  assert (RNG._double(rng) == (16159453d,Simple(1059025964525L)), "RNG.double doesn't work")
+
+  // map2
+  val rngMap2 = RNG.map2 (RNG.int, RNG.int) (_+_)
+  println( rngMap2 (rng) == (32318906,Simple(1059025964525L)), "map2 doesn't work" )
 }

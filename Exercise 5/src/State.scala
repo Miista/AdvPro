@@ -81,12 +81,18 @@ object RNG {
   // def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
 
   // Exercise 5 (CB 6.5)
-
-  // val _double: Rand[Double] =
+  val _double: Rand[Double] = map[Int,Double] (int) (i => i.toDouble)
 
   // Exercise 6 (CB 6.6)
-
-  // def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] =
+  def map2[A,B,C] (ra: Rand[A], rb: Rand[B])
+                  (f: (A, B) => C): Rand[C] = {
+    in => {
+      val (i1, r1) = ra (in)
+      val (i2, r2) = rb (in)
+      val com = f (i1, i2)
+      (com, r2)
+    }
+  }
 
   // this is given in the book
 
