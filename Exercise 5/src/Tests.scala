@@ -34,6 +34,8 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
 
   // sequence
   val lr = List( RNG.int, RNG.int, RNG.int )
+  val e = RNG.sequence (lr) (rng)
+  assert (e == (List(16159453,-1281479697 ,-340305902), Simple(259172689157871L)), "sequence doesn't work")
 
   // flatMap
   val f1: RNG.Rand[Int] = _.nextInt
