@@ -93,16 +93,16 @@ object RNG {
 
   // Exercise 5 (CB 6.5)
   val _double: Rand[Double] =
-    map[Int,Double] (nonNegativeInt) (i => i.toDouble)
+    map[Int,Double] (nonNegativeInt) (_.toDouble)
 
   // Exercise 6 (CB 6.6)
   def map2[A,B,C] (ra: Rand[A], rb: Rand[B])
                   (f: (A, B) => C): Rand[C] = {
-    in => {
-      val (i1, r1) = ra (in)
-      val (i2, r2) = rb (in)
-      val com = f (i1, i2)
-      (com, r2)
+    rng => {
+      val (random1, r1) = ra (rng)
+      val (random2, r2) = rb (r1)
+      val combined = f (random1, random2)
+      (combined, r2)
     }
   }
 

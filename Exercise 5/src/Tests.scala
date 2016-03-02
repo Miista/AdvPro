@@ -30,7 +30,7 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
 
   // map2
   val rngMap2 = RNG.map2 (RNG.int, RNG.int) (_+_)
-  assert (rngMap2 (rng) == (32318906,Simple(1059025964525L)), "map2 doesn't work")
+  assert (rngMap2 (rng) == (-1265320244,Simple(197491923327988L)), "map2 doesn't work")
 
   // sequence
   val lr = List( RNG.int, RNG.int, RNG.int )
