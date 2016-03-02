@@ -69,8 +69,17 @@ object RNG {
 
   type Rand[+A] = RNG => (A, RNG)
 
+  /**
+    * Takes a [[RNG]] and produces (&lt;random int&gt;, &lt;next RNG state&gt;)
+    */
   val int: Rand[Int] = _.nextInt
 
+  /**
+    * Works like [[identity]]
+    * @param a
+    * @tparam A
+    * @return
+    */
   def unit[A](a: A): Rand[A] =
     rng => (a, rng)
 
