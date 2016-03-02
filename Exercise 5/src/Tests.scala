@@ -21,7 +21,7 @@ object Tests extends App {
   // doubleInt
   assert (RNG.doubleInt(rng) == ((16159453d, 16159453),Simple(1059025964525L)), "RNG.doubleInt doesn't work")
 
-
+  // ints
   assert (RNG.ints(3)(rng) == (List(16159453,-1281479697 ,-340305902), Simple(259172689157871L)), "RNG.ints doesn't work")
 //  val e = rng.nextInt
 //  val e1 = e._2.nextInt
