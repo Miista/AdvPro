@@ -1,4 +1,4 @@
-import RNG.Simple
+import RNG.{Rand, Simple}
 
 /**
   * Created by palmund on 01/03/2016.
@@ -35,4 +35,14 @@ object Tests extends App {
   // sequence
   val lr = List( RNG.int, RNG.int, RNG.int )
   println( RNG.sequence (lr)(rng) )
+
+  // flatMap
+  val f1: RNG.Rand[Int] = _.nextInt
+  val g1: RNG.Rand[Double] = rng => {
+    val (x,r) = rng.nextInt
+    (x.toDouble, r)
+  }
+
+  val flatM: Rand[Double] = RNG.flatMap[Int, Double] (f1)(i => g1)
+  assert (flatM(rng) == (-1.281479697E9,Simple(197491923327988L)))
 }
