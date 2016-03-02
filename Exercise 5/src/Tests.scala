@@ -22,6 +22,7 @@ object Tests extends App {
   assert (RNG.doubleInt(rng) == ((16159453d, 16159453),Simple(1059025964525L)), "RNG.doubleInt doesn't work")
 
   // ints
+  assert (RNG.ints(0)(rng) == (List(), Simple(42L)), "RNG.ints doesn't work")
   assert (RNG.ints(3)(rng) == (List(16159453,-1281479697 ,-340305902), Simple(259172689157871L)), "RNG.ints doesn't work")
 
   // _double
@@ -29,5 +30,9 @@ object Tests extends App {
 
   // map2
   val rngMap2 = RNG.map2 (RNG.int, RNG.int) (_+_)
-  println( rngMap2 (rng) == (32318906,Simple(1059025964525L)), "map2 doesn't work" )
+  assert (rngMap2 (rng) == (32318906,Simple(1059025964525L)), "map2 doesn't work")
+
+  // sequence
+  val lr = List( RNG.int, RNG.int, RNG.int )
+  println( RNG.sequence (lr)(rng) )
 }
