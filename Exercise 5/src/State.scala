@@ -81,7 +81,8 @@ object RNG {
   // def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
 
   // Exercise 5 (CB 6.5)
-  val _double: Rand[Double] = map[Int,Double] (int) (i => i.toDouble)
+  val _double: Rand[Double] =
+    map[Int,Double] (nonNegativeInt) (i => i.toDouble)
 
   // Exercise 6 (CB 6.6)
   def map2[A,B,C] (ra: Rand[A], rb: Rand[B])
@@ -96,19 +97,18 @@ object RNG {
 
   // this is given in the book
 
-  // def both[A,B](ra: Rand[A], rb: Rand[B]): Rand[(A,B)] =
-  //  map2(ra, rb)((_, _))
+  def both[A,B](ra: Rand[A], rb: Rand[B]): Rand[(A,B)] =
+    map2(ra, rb)((_, _))
 
-  // val randIntDouble: Rand[(Int, Double)] = both(int, double)
+  val randIntDouble: Rand[(Int, Double)] = both(int, double)
 
-  // val randDoubleInt: Rand[(Double, Int)] = both(double, int)
+  val randDoubleInt: Rand[(Double, Int)] = both(double, int)
 
   // Exercise 7 (6.7)
   def sequence[A] (fs: List[Rand[A]]): Rand[List[A]] =
     fs.foldRight[Rand[List[A]]] (unit(List[A]())) ((a, b) => {
       map2 (a,b) (_::_)
     })
-//    rng => fs.foldRight[RNG => (List[A],RNG)] (rng) (map2(_, _) (_::_)) // Partial application
 
 
   // def _ints(count: Int): Rand[List[Int]] = ???
