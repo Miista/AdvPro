@@ -42,11 +42,11 @@ object RNG {
   }
 
   def double3(rng: RNG): ((Double, Double, Double), RNG) = {
-    (for {
-      d1: (Double, RNG) <- Some(double(rng))
-      d2: (Double, RNG) <- Some(double(d1._2))
-      d3: (Double, RNG) <- Some(double(d2._2))
-    } yield ((d1._1,d2._1,d3._1), d3._2)).get
+    val (d1,r1) = double(rng)
+    val (d2,r2) = double(r1)
+    val (d3,r3) = double(r2)
+    val randoms = (d1,d2,d3)
+    (randoms, r3)
   }
 
   // def boolean(rng: RNG): (Boolean, RNG) =
