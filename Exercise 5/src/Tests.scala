@@ -53,4 +53,9 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
   // _map2
   val _rngMap2 = RNG._map2 (RNG.int, RNG.int) (_+_)
   assert (_rngMap2 (rng) == (-1265320244,Simple(197491923327988L)), "map2 doesn't work")
+
+  val s1 = new State[String, Int](s => (1, ""))
+  val s2 = new State[String, Int](s => (2, ""))
+  println( s1.flatMap[Int] ((i: Int) => s2).run("") )
+  println( s1.run ("") )
 }

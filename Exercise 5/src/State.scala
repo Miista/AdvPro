@@ -172,9 +172,10 @@ case class State[S, +A](run: S => (A, S)) {
     ???
 
   def flatMap[B] (f: A => State[S, B]): State[S, B] =
-    State[S,B] ((s: S) => {
-      val (x: A, r: S) = run(s)
-      f (x).run(r)
+    State[S,B]((s: S) => {
+      val (value, newState): (A, S) = run(s)
+      val transition = f(value) // Obtain the transition
+      transition.run(newState) // Run the transition to get the new value and state
     })
 
 }
