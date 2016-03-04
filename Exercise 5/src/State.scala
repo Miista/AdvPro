@@ -191,8 +191,13 @@ object State {
     State(s => (a, s))
 
   // Exercise 10 (6.10) continued
+  def sequence[S,A] (sas: List[State[S, A]]): State[S, List[A]] = {
+    def mapper(s: State[S,A], l: State[S,List[A]]): State[S, List[A]] =
+      s.map2(l) (_::_)
+    val z = unit[S,List[A]] (List.empty[A])
 
-  // def sequence[S,A](sas: List[State[S, A]]): State[S, List[A]] = ???
+    sas.foldRight[State[S, List[A]]] (z) (mapper)
+  }
   //
   // This is given in the book:
 

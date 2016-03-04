@@ -84,6 +84,10 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
    * > convert to Double = 3.0
    * (3.0, state = 2)
    */
-  println(ii2d.run (0))
   assert (ii2d.run (0) == (3.0,2), "State.map2 doesn't work")
+
+  // State.sequence
+  val slr = List( RNG.int, RNG.int, RNG.int )
+  val se = RNG.sequence (lr) (rng)
+  assert (se == (List(16159453,-1281479697 ,-340305902), Simple(259172689157871L)), "sequence doesn't work")
 }
