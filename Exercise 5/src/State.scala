@@ -198,13 +198,13 @@ object State {
 
     sas.foldRight[State[S, List[A]]] (z) (mapper)
   }
-  //
-  // This is given in the book:
 
-  // def modify[S](f: S => S): State[S, Unit] = for {
-  //   s <- get // Gets the current state and assigns it to `s`.
-  //   _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
-  // } yield ()
+  // This is given in the book:
+  def modify[S](f: S => S): State[S, Unit] =
+    for {
+      s <- get // Gets the current state and assigns it to `s`.
+      _ <- set(f(s)) // Sets the new state to `f` applied to `s`.
+    } yield ()
 
   def get[S]: State[S, S] = State(s => (s, s))
 
@@ -238,10 +238,30 @@ case object Turn extends Input
 case class Machine(locked: Boolean, candies: Int, coins: Int)
 
 object Candy {
+  type CoinsLeft = Int
+  type CandiesLeft = Int
+
+  def update(i: Input)(m: Machine): Machine =
+    i match {
+      case _ if m.candies == 0 => m // Ignore inputs
+      case Turn if m.locked => m // Turn knob on locked machine
+      case Coin if m.locked => m.copy(locked = false) // Unlock machine
+      case Coin => m // Insert coin on unlocked machine
+      case Turn => m.copy(locked = true, candies = m.candies-1, coins = m.coins+1)
+    }
 
   // Exercise 13 (CB 6.11)
+  def simulateMachine(inputs: List[Input]): State[Machine, (CoinsLeft, CandiesLeft)] = {
+    def i2s(i: Input): State[Machine, Unit] =
+      (modify [Machine] _).compose (update)(i)
 
-  // def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
+    def bind(state: Machine): (CoinsLeft,CandiesLeft) = (state.coins, state.candies)
+
+    // Map inputs to states
+    val states: List[State[Machine, Unit]] = inputs.map(i2s)
+
+    sequence (states).flatMap [(CoinsLeft, CandiesLeft)](_ => get[Machine].map(bind))
+  }
 }
 
 // vim:cc=80:foldmethod=indent:foldenable
