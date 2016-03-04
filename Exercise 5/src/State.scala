@@ -214,8 +214,11 @@ object State {
   def random_int :Rand[Int] =  State (_.nextInt)
 
   // Exercise 11
-
-  // def state2stream[S,A] (s :State[S,A]) (seed :S) :Stream[A] = ???
+  def state2stream[S,A] (s: State[S,A])
+                        (seed: S): Stream[A] = {
+    val (a, ns) = s.run(seed)
+    Stream.cons[A](a, state2stream[S,A](s)(ns))
+  }
 
   // Exercise 12
 

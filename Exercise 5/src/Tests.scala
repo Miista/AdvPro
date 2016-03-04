@@ -89,5 +89,15 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
   // State.sequence
   val slr = List( RNG.int, RNG.int, RNG.int )
   val se = RNG.sequence (lr) (rng)
+
   assert (se == (List(16159453,-1281479697 ,-340305902), Simple(259172689157871L)), "sequence doesn't work")
+
+  // state2stream
+//  type Rand[A] = State[RNG, A]
+  val rng1: State[RNG, Int] = new State[RNG,Int](rng => rng.nextInt)
+
+  val s2s = State.state2stream[RNG, Int] (rng1) (rng)
+  assert (s2s.take(3).toList == List(16159453,-1281479697 ,-340305902), "state2stream doesn't work")
+  assert (s2s.take(2).toList == List(16159453,-1281479697), "state2stream doesn't work")
+  assert (s2s.take(0).toList == List(), "state2stream doesn't work")
 }
