@@ -54,8 +54,36 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
   val _rngMap2 = RNG._map2 (RNG.int, RNG.int) (_+_)
   assert (_rngMap2 (rng) == (-1265320244,Simple(197491923327988L)), "map2 doesn't work")
 
-  val s1 = new State[String, Int](s => (1, ""))
+  val s1 = new State[String, Int](s => (s.toInt, s))
   val s2 = new State[String, Int](s => (2, ""))
-  println( s1.flatMap[Int] ((i: Int) => s2).run("") )
-  println( s1.run ("") )
+//  println( s1.flatMap[Int] ((i: Int) => s2).run("") )
+//  println( s1.run ("") )
+
+  val s2i = new State[String,Int](str => (str.toInt, str))
+  val i2d = new State[Int,Double](i => (i.toDouble, i))
+  val s2d = new State[String,Double](str => s2i.map[Double](_.toDouble).run(str))
+  assert (s2d.run("1") == (1.0,"1"), "State.map doesn't work")
+
+  val s2d_ = s2i.flatMap[Double](_ => s2d)
+  assert (s2d_.run("1") == (1.0,"1"), "State.flatMap doesn't work")
+
+  val inc = new State[Int,Int](i => (i+1, i+1))
+
+  /* The following should:
+   * > i+1
+   * > i+1 - yes, twice!
+   * > add (i+1) + (i+1)
+   * > convert it to a Double
+   */
+  val ii2d = inc.map2[Int,Double] (inc) ((i1,i2) => (i1 + i2).toDouble)
+
+  /* Setting i=0
+   * > 0+1 = 1
+   * > 1+1 = 2
+   * > add 1 + 2
+   * > convert to Double = 3.0
+   * (3.0, state = 2)
+   */
+  println(ii2d.run (0))
+  assert (ii2d.run (0) == (3.0,2), "State.map2 doesn't work")
 }
