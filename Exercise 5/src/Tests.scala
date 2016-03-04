@@ -101,6 +101,9 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
   assert (s2s.take(2).toList == List(16159453,-1281479697), "state2stream doesn't work")
   assert (s2s.take(0).toList == List(), "state2stream doesn't work")
 
+  // random_integers
+  assert (State.random_integers.take(3) == List(16159453,-1281479697 ,-340305902), "random_integers didn't work")
+
   // Candy machine
   val machine = Machine(false, 5, 10)
   val inputs = List(Coin, Turn, Coin, Turn, Coin, Turn, Coin, Turn)

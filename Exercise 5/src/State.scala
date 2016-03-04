@@ -214,15 +214,28 @@ object State {
   def random_int :Rand[Int] =  State (_.nextInt)
 
   // Exercise 11
-  def state2stream[S,A] (s: State[S,A])
+  def state2stream[S,A] (transition: State[S,A])
                         (seed: S): Stream[A] = {
-    val (a, ns) = s.run(seed)
-    Stream.cons[A](a, state2stream[S,A](s)(ns))
+    val (a, ns) = transition.run(seed)
+    Stream.cons[A](a, state2stream[S,A](transition)(ns))
   }
 
-  // Exercise 12
+  /**
+    * Shortcut for making a state transition from a lambda expression
+    *
+    * @param f
+    * @tparam Z
+    * @tparam C
+    * @return
+    */
+  def mkState[Z,C](f: (C) => (Z,C)): State[C,Z] =
+    State[C,Z](f)
 
-  // val random_integers = ???
+  // Exercise 12
+  val random_integers: List[Int] = {
+    val e = State.state2stream [RNG, Int](mkState(RNG.int))(RNG.Simple(42))
+    e.take(10).toList
+  }
 
 }
 
