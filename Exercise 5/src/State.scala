@@ -74,12 +74,6 @@ object RNG {
     */
   val int: Rand[Int] = _.nextInt
 
-  /**
-    * Works like [[identity]]
-    * @param a
-    * @tparam A
-    * @return
-    */
   def unit[A](a: A): Rand[A] =
     rng => (a, rng)
 
@@ -89,7 +83,7 @@ object RNG {
       (f(a), rng2)
     }
 
-  // def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
+  def nonNegativeEven: Rand[Int] = map(nonNegativeInt)(i => i - i % 2)
 
   // Exercise 5 (CB 6.5)
   val _double: Rand[Double] =
