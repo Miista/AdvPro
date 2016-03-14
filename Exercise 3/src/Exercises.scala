@@ -42,7 +42,7 @@ import scala.math.{max, pow}
  * construction time. */
 
 trait OrderedPoint extends java.awt.Point with Ordered[Point] {
-  def compare (that :java.awt.Point): Int = {
+  def compare (that: java.awt.Point): Int = {
     if (this.x < that.x || (this.x == that.x && this.y < that.y)) {
       return -1
     }
@@ -76,21 +76,21 @@ object Tree {
   // Exercise 2 (3.25)
   def size[A] (t: Tree[A]): Int =
     t match {
-      case Leaf(v) => 1
+      case Leaf(_) => 1
       case Branch(l,r) => 1 + size(l) + size(r)
     }
 
   // Exercise 3 (3.26)
   def maximum (t: Tree[Int]): Int =
     t match {
-      case Leaf( v ) => v
-      case Branch( l, r ) => maximum( l ) max maximum( r )
+      case Leaf(v) => v
+      case Branch(l,r) => max (maximum(l), maximum(r))
     }
 
   // Exercise 4 (3.27)
   def depth[A] (t: Tree[A]): Int =
     t match {
-      case Branch(l,r) => max( depth(l), depth(r) ) + 1
+      case Branch(l,r) => max (depth(l), depth(r)) + 1
       case Leaf(_) => 0
     }
 
@@ -98,8 +98,8 @@ object Tree {
   def map[A, B] (t: Tree[A])
                 (f: A => B): Tree[B] =
     t match {
-      case Leaf(v) => Leaf( f(v) )
-      case Branch(l,r) => Branch[B]( map(l)(f), map(r)(f) )
+      case Leaf(v) => Leaf(f (v))
+      case Branch(l,r) => Branch[B](map (l)(f), map (r)(f))
     }
 
   // Exercise 6 (3.29)
@@ -107,32 +107,32 @@ object Tree {
                  (f: (B, B) => B)
                  (g: A => B): B =
     t match {
-      case Leaf(v) => g(v)
-      case Branch(l,r) => f( fold(l)(f)(g), fold(r)(f)(g) )
+      case Leaf(v) => g (v)
+      case Branch(l,r) => f (fold (l)(f)(g), fold (r)(f)(g))
     }
 
   def size1[A] (t: Tree[A]): Int =
-    1 + fold[A,Int](t) (_+_) (a => 1)
+    1 + fold[A,Int] (t)(_+_)(_ => 1)
 
   def maximum1 (t: Tree[Int]): Int =
-    fold(t) (max) (identity)
+    fold (t)(max)(identity)
 
   def depth1[A] (t: Tree[A]): Int =
-    fold[A,Int](t) (max(_, _) + 1) (a => 0)
+    fold[A,Int] (t)(max(_, _) + 1) (_ => 0)
 
   def map1[A,B] (t: Tree[A])
                  (f: A => B): Tree[B] =
-    fold[A,Tree[B]] (t) (Branch[B]) (v => Leaf(f(v)))
+    fold[A,Tree[B]] (t)(Branch[B])(v => Leaf(f(v)))
 }
 
 sealed trait Option[+A] {
   self: Option[A] => // Explicit self-type
 
   // Exercise 7 (4.1)
-  def map[B] (f: A=>B): Option[B] =
+  def map[B] (f: A => B): Option[B] =
     this match {
       case None => None
-      case Some(v) => Some( f(v) )
+      case Some(v) => Some (f (v))
     }
 
   // Ignore the arrow in default's type this week
@@ -145,15 +145,15 @@ sealed trait Option[+A] {
     }
 
   def flatMap[B] (f: A => Option[B]): Option[B] =
-    map(f).getOrElse(None)
+    map (f).getOrElse (None)
 
 
-  // Ignore the arrow in ob's type this week
+    // Ignore the arrow in ob's type this week
   def orElse[B >: A] (ob: => Option[B]): Option[B] =
-    map(Some(_)).getOrElse(ob)
+    map (Some(_)).getOrElse (ob)
 
   def filter (f: A => Boolean): Option[A] =
-    flatMap(a => if (f(a)) Some(a) else None)
+    flatMap (a => if (f(a)) Some(a) else None)
 }
 
 case class Some[+A] (get: A) extends Option[A]
@@ -169,17 +169,20 @@ object ExercisesOption {
 
   // Exercise 8 (4.2)
   def variance (xs: Seq[Double]) : Option[Double] =
+    mean(xs).flatMap[Double] (m => mean (xs.map (x => math.pow (x-m, 2))))
+
+  def variance1 (xs: Seq[Double]) : Option[Double] =
     for {
-      m <- mean(xs)
+      m <- mean (xs)
       ys = xs.map[Double, Seq[Double]](x => pow(x - m, 2))
-      v <- mean(ys)
+      v <- mean (ys)
     } yield v
 
   def variance2(xs: Seq[Double]): Option[Double] =
     for {
-      m <- mean(xs)
+      m <- mean (xs)
       y <- Some( for { x <- xs } yield pow(x-m, 2) )
-      v <- mean( y )
+      v <- mean (y)
     } yield v
 
   // Exercise 9 (4.3)
@@ -198,11 +201,11 @@ object ExercisesOption {
     for {
       a <- ao
       b <- bo
-    } yield f(a,b)
+    } yield f (a,b)
 
   // Exercise 10 (4.4)
-  def sequence[A] (as: List[Option[A]]) : Option[List[A]] =
-    as.foldRight[Option[List[A]]] (Some(Nil)) (map2(_, _) (_::_)) // Partial application
+  def sequence[A] (aos: List[Option[A]]) : Option[List[A]] =
+    aos.foldRight[Option[List[A]]] (Some(Nil))(map2 (_, _)(_::_)) // Partial application
 
   // Exercise 11 (4.5)
   def traverse[A,B] (as: List[A]) (f: A => Option[B]): Option[List[B]] = {
@@ -211,8 +214,11 @@ object ExercisesOption {
         b <- others
         a <- f(item)
       } yield a :: b
-    as.foldRight[Option[List[B]]](Some(Nil)) (mapper)
+    as.foldRight[Option[List[B]]] (Some(Nil)) (mapper)
   }
+
+  def traverse1[A,B] (as: List[A]) (f: A => Option[B]): Option[List[B]] =
+    as.foldRight[Option[List[B]]] (Some(Nil)) ((a, bo) => map2 (f (a), bo)(_::_))
 }
 
 
@@ -266,9 +272,13 @@ object Tests extends App {
    assert (ExercisesOption.variance (List()) == None, "variance2")
    assert (ExercisesOption.variance (List(10,20,30)) == Some(66.66666666666667), "variance3")
 
-   assert (ExercisesOption.variance2 (List(42,42,42)) == Some(0.0), "variance1")
-   assert (ExercisesOption.variance2 (List()) == None, "variance2")
-   assert (ExercisesOption.variance2 (List(10,20,30)) == Some(66.66666666666667), "variance3")
+  assert (ExercisesOption.variance1 (List(42,42,42)) == Some(0.0), "variance1-1")
+  assert (ExercisesOption.variance1 (List()) == None, "variance1-2")
+  assert (ExercisesOption.variance1 (List(10,20,30)) == Some(66.66666666666667), "variance1-3")
+
+   assert (ExercisesOption.variance2 (List(42,42,42)) == Some(0.0), "variance2-1")
+   assert (ExercisesOption.variance2 (List()) == None, "variance2-2")
+   assert (ExercisesOption.variance2 (List(10,20,30)) == Some(66.66666666666667), "variance2-3")
 
 
   // Exercise 9
@@ -284,8 +294,8 @@ object Tests extends App {
    assert (ExercisesOption.sequence (List(Some(1), Some(2), None    )) == None)
 
   // Exercise 11
-//   def f (n: Int) :Option[Int] = if (n%2 == 0) Some(n) else None
-//   assert (ExercisesOption.traverse (List(1,2,42)) (Some(_)) == Some(List(1,2,42)))
-//   assert (ExercisesOption.traverse (List(1,2,42)) (f) == None)
+   def f (n: Int) :Option[Int] = if (n%2 == 0) Some(n) else None
+   assert (ExercisesOption.traverse (List(1,2,42)) (Some(_)) == Some(List(1,2,42)))
+   assert (ExercisesOption.traverse (List(1,2,42)) (f) == None)
 
 }
