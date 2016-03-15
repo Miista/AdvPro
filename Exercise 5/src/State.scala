@@ -210,8 +210,8 @@ object State {
   // Exercise 11
   def state2stream[S,A] (transition: State[S,A])
                         (seed: S): Stream[A] = {
-    val (a, ns) = transition.run(seed)
-    Stream.cons[A](a, state2stream[S,A](transition)(ns))
+    val (a, ns) = transition.run (seed)
+    Stream.cons[A] (a, state2stream[S,A] (transition)(ns))
   }
 
   /**
@@ -227,8 +227,9 @@ object State {
 
   // Exercise 12
   val random_integers: List[Int] = {
-    val e = State.state2stream [RNG, Int](mkState(RNG.int))(RNG.Simple(42))
-    e.take(10).toList
+    state2stream (random_int)(RNG.Simple(42))
+      .take(10)
+      .toList
   }
 
 }

@@ -105,7 +105,7 @@ assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L
   assert (State.random_integers.take(3) == List(16159453,-1281479697 ,-340305902), "random_integers didn't work")
 
   // Candy machine
-  val machine = Machine(false, 5, 10)
+  val machine = Machine(locked = false, 5, 10)
   val inputs = List(Coin, Turn, Coin, Turn, Coin, Turn, Coin, Turn)
   val (out, m2) = Candy.simulateMachine(inputs).run(machine)
   assert (out == (14,1), "didn't simulate machine properly")
