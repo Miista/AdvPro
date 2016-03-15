@@ -99,7 +99,7 @@ object Tests extends App {
   assert (naturals.takeWhile2(_<5).toList == List(0,1,2,3,4), "takeWhile2 doesn't work")
 
   val s1 = Stream(1,2,3)
-  assert (s1.zipWith[Int,Int](s1)(_+_).toList == List(2,4,6), "zipWith doesn't work")
+  assert (s1.zipWith[Int,Int](_+_)(s1).toList == List(2,4,6), "zipWith doesn't work")
 
   assert (naturals.zipAll (fibs).take(100).toList.length == 100, "zipAll doesn't work")
 //  val s2 = Stream(5,6,7,8,9,10)

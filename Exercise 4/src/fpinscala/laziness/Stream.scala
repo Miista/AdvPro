@@ -138,6 +138,7 @@ sealed trait Stream[+A] {
       }
     }
 
+  // Exercise 13
   def map2[B] (f: A => B): Stream[B] =
     unfold[B,Stream[A]] (this) {
       case Cons(h, t) => Some(f(h()), t())
@@ -145,13 +146,11 @@ sealed trait Stream[+A] {
     }
 
   def take2 (n: Int): Stream[A] =
-    unfold[A,Stream[A]] (this) (s => {
-      if (n <= 0) None
-      else s match {
-        case Cons(h,t) => Some(h(), t().take2(n-1))
-        case Empty => None
-      }
-    })
+    unfold[A, (Stream[A], Int)] ((this, n)) {
+      case (_, 0) =>  None
+      case (Empty, _) => None
+      case (Cons(h,t), i) => Some((h(), (t(), i-1)))
+    }
 
   def takeWhile2 (p: A => Boolean): Stream[A] =
     unfold[A,Stream[A]] (this) (s => {
@@ -162,8 +161,8 @@ sealed trait Stream[+A] {
       }
     })
 
-  def zipWith[B,C] (s2: Stream[B])
-                   (f: (A,B) => C): Stream[C] =
+  def zipWith[B,C] (f: (A,B) => C)
+                   (s2: Stream[B]): Stream[C] =
     unfold ((this,s2)) (s => {
       s match {
         case (Cons(h1,t1), Cons(h2,t2)) => Some (f(h1(), h2()), (t1(),t2()))
@@ -192,6 +191,20 @@ sealed trait Stream[+A] {
         }
       }
     })
+
+  // What should be the result of this?
+  // naturals.map (_%2==0) <- true, false ...
+  //          .zipWith[Boolean,Boolean] (_||_) (naturals.map (_%2==1)) <- false, true ...
+  //          .take(10)                 ^ true || true
+  //          .toList <- true x 10
+  //
+
+  // And of this?
+  // naturals.map (_%2==0) <- true, false, ...
+  //          .zipWith[Boolean,Boolean] (_&&_) (naturals.map (_%2==1)) <- false, true, ...
+  //          .take(10)                   ^^ false ...
+  //          .toList <- false x 10
+  //
 
   // Exercise 15
   def tails: Stream[Stream[A]] =
