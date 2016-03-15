@@ -49,6 +49,8 @@ object Tests extends App {
 
   naturals.takeWhile1(_<1000000000).drop(100).take(50).toList
 
+  assert (naturals.takeWhile1(_<5).take(10).toList == List(0,1,2,3,4), "Stream.takeWhile1 doesn't work")
+
   assert (naturals.headOption1() == Some(0), "headOption1 != 0")
   assert (naturals.drop(5).headOption1() == Some(5), "headOption1 != 5")
   assert (naturals.drop(5).take(5).drop(4).headOption1() == Some(9), "headOption1 != 9")

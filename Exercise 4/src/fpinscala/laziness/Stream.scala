@@ -71,17 +71,16 @@ sealed trait Stream[+A] {
 
   def drop (n: Int): Stream[A] =
     if (n == 0) this
-    else tail.drop(n-1)
+    else tail.drop (n-1)
 
   def takeWhile (p: A => Boolean): Stream[A] =
     this match {
-      case Cons(h,t) if p(h()) => cons(h(), t().takeWhile(p))
-      case Cons(_,_) => empty[A]
-      case Empty => empty[A]
+      case Cons(h,t) if p (h()) => cons (h(), t().takeWhile(p))
+      case Cons(_,_) | Empty => empty[A]
     }
 
   def takeWhile1 (p: A => Boolean): Stream[A] =
-    foldRight[Stream[A]] (Empty) ((a,b) => cons[A](a, b))
+    foldRight[Stream[A]] (Empty) ((a,b) => if (p (a)) cons[A](a, b) else Empty)
 
   def forAll (p: A => Boolean): Boolean =
     this match {
@@ -111,21 +110,24 @@ sealed trait Stream[+A] {
     foldRight[Stream[B]] (Empty) ((a, b) => b.append(f(a)))
   }
 
+  // Exercise 8
   def map1[B] (f: A => B): Stream[B] =
-    foldRight[Stream[B]] (Empty) ((a,t) => cons[B](f(a), t))
+    foldRight[Stream[B]] (Empty) ((h,t) => cons[B] (f (h), t))
 
   def filter1 (p: A => Boolean): Stream[A] =
-    foldRight[Stream[A]] (Empty) ((v,t) => if (p(v)) cons(v, t) else t)
+    foldRight[Stream[A]] (Empty) ((h,t) => if (p(h)) cons(h, t) else t)
 
   def append1[B >: A] (that: => Stream[B]): Stream[B] =
     foldRight[Stream[B]] (that) (cons(_,_))
 
-  // Exercise 17
   def flatMap1[B >: A] (f: A => Stream[B]): Stream[B] =
-    foldRight[Stream[B]] (Empty) ((h,t) => f(h).append(t))
+    foldRight[Stream[B]] (Empty) ((h,t) => f (h).append (t))
 
-
-  //def find (p :A => Boolean) :Option[A] = this.filter (p).headOption
+  // Exercise 9
+  def find (p :A => Boolean): Option[A] =
+    this.filter (p).headOption
+  // Due to laziness only a subset of the elements are actually evaluated.
+  // With a list this would traverse the entire list.
 
   def startsWith[B >: A] (that: => Stream[B]): Boolean =
     that.headOption1() match {
