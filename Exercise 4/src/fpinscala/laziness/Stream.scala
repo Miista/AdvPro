@@ -208,6 +208,23 @@ case class Cons[+A](h: ()=>A, t: ()=>Stream[A]) extends Stream[A]
 
 
 object Stream {
+
+  // Exercise 10
+  def fibs: Stream[Int] = {
+    def iter(p: Int, c: Int): Stream[Int] =
+      cons (p, iter(c, p+c))
+    iter(0,1)
+  }
+
+  def fibs1: Stream[Int] = {
+    def iter(p: Stream[Int], step: Int): Stream[Int] = {
+      val next = p.headOption().get
+      cons (next, iter (p.drop (step), next))
+    }
+    iter (Stream.from (0), 1)
+  }
+
+  // Exercise 11
   def unfold[A, S] (z: S)
                    (f: S => Option[(A, S)]): Stream[A] =
     f(z) match {
@@ -227,20 +244,14 @@ object Stream {
                    (f: S => Option[(A,S)]): Stream[A] =
     f(z).fold[Stream[A]] (Empty) (p => cons(p._1, unfold(p._2) (f)))
 
-  // Exercise 10
-  def fibs: Stream[Int] = {
-    def iter(p: Int, c: Int): Stream[Int] =
-      cons (p, iter(c, p+c))
-    iter(0,1)
-  }
-
-  def fibs1: Stream[Int] = {
-    def iter(p: Stream[Int], step: Int): Stream[Int] = {
-      val next = p.headOption().get
-      cons (next, iter (p.drop (step), next))
+  // Exercise 12
+  def fibs2: Stream[Int] =
+    unfold [Int, (Int, Int)] ((0, 1)) {
+      case (f0, f1) => Some (f0, (f1, f0 + f1))
     }
-    iter (Stream.from (0), 1)
-  }
+
+  def from1(n: Int): Stream[Int] =
+    unfold (n)(i => Some(i, i+1))
 
   def empty[A]: Stream[A] = Empty
 
