@@ -227,10 +227,19 @@ object Stream {
                    (f: S => Option[(A,S)]): Stream[A] =
     f(z).fold[Stream[A]] (Empty) (p => cons(p._1, unfold(p._2) (f)))
 
+  // Exercise 10
   def fibs: Stream[Int] = {
-    def in(p: Int, c: Int): Stream[Int] =
-      cons (p, in(c, p+c))
-    in(0,1)
+    def iter(p: Int, c: Int): Stream[Int] =
+      cons (p, iter(c, p+c))
+    iter(0,1)
+  }
+
+  def fibs1: Stream[Int] = {
+    def iter(p: Stream[Int], step: Int): Stream[Int] = {
+      val next = p.headOption().get
+      cons (next, iter (p.drop (step), next))
+    }
+    iter (Stream.from (0), 1)
   }
 
   def empty[A]: Stream[A] = Empty
