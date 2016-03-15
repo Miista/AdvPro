@@ -67,6 +67,8 @@ object Tests extends App {
 //  naturals.flatMap (x =>from (x)).take (100).toList
 
   assert (Stream(1,2,3).startsWith (Stream(1,2)), "startsWith doesn't work")
+  assert (!Stream(1,2).startsWith (Stream(1,2,3)), "startsWith doesn't work")
+  assert (!Stream(3,2,1).startsWith (Stream(1,2)), "startsWith doesn't work")
 
   assert (Stream(1,2,3).map1(i => i*2).toList == List(2,4,6), "map1 doesn't work")
   naturals.map (_*2).drop (30).take (50).toList

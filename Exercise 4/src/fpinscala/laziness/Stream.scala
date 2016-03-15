@@ -129,14 +129,33 @@ sealed trait Stream[+A] {
   // Due to laziness only a subset of the elements are actually evaluated.
   // With a list this would traverse the entire list.
 
+  // Exercise 14
   def startsWith[B >: A] (that: => Stream[B]): Boolean =
-    that.headOption1() match {
-      case None => true
-      case Some(v) => headOption1() match {
-        case None => true
-        case Some(v1) => v == v1 && tail.startsWith(that.tail)
+    this.zipAll (that)
+      .takeWhile {
+        case (None, None) => true
+        case (_, None) => false
+        case (_, _) => true
       }
-    }
+      .forAll (tuple => tuple._1 == tuple._2)
+
+  def startsWith1[B >: A] (that: => Stream[B]): Boolean =
+    this.zipAll (that)
+      .takeWhile (_._2.isDefined)
+      .forAll (t => t._1 == t._2)
+
+  // A bonus question: Why does the following call fail?
+  // naturals.startsWith (naturals)
+  //
+  // It should result in the stack overflowing
+
+  // Why does the following call terminate, even though both arguments are infinite streams?
+  // naturals.startsWith (fibs)
+  //
+  // Because [0,1,2,...] does not start with [0,1,1,...]
+  // After two comparisons the streams no longer match and since there is still elements in both streams
+  // neither stream starts with the other
+
 
   // Exercise 13
   def map2[B] (f: A => B): Stream[B] =
