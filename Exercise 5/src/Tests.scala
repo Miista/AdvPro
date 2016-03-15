@@ -26,7 +26,7 @@ object Tests extends App {
   assert (RNG.ints(3)(rng) == (List(16159453,-1281479697 ,-340305902), Simple(259172689157871L)), "RNG.ints doesn't work")
 
   // _double
-  assert (RNG._double(rng) == (16159453d,Simple(1059025964525L)), "RNG.double doesn't work")
+  assert (RNG._double(rng) == (0.007524831686168909,Simple(1059025964525L)), "RNG.double doesn't work")
 
   // map2
   val rngMap2 = RNG.map2 (RNG.int, RNG.int) (_+_)

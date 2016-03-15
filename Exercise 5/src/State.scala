@@ -56,11 +56,11 @@ object RNG {
   def ints (count: Int)
            (rng: RNG): (List[Int], RNG) =
     if (count == 0) // we should produce NO random ints
-      (List.empty[Int], rng)
+      (List.empty, rng)
     else {
-      val (x, r) = rng.nextInt
-      val (xs, r1) = ints(count-1)(r)
-      (x :: xs, r1)
+      val (h, r) = rng.nextInt
+      val (t, r1) = ints(count-1)(r)
+      (h :: t, r1)
     }
 
   // There is something terribly repetitive about passing the RNG along
@@ -87,7 +87,7 @@ object RNG {
 
   // Exercise 5 (CB 6.5)
   val _double: Rand[Double] =
-    map[Int,Double] (nonNegativeInt) (_.toDouble)
+    map[Int,Double] (nonNegativeInt) (i => i / (Int.MaxValue.toDouble + 1))
 
   // Exercise 6 (CB 6.6)
   def map2[A,B,C] (ra: Rand[A], rb: Rand[B])
