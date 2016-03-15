@@ -110,22 +110,19 @@ object RNG {
   val randDoubleInt: Rand[(Double, Int)] = both(double, int)
 
   // Exercise 7 (6.7)
-  def sequence[A] (fs: List[Rand[A]]): Rand[List[A]] = {
-    val z: Rand[List[A]] = unit (List.empty[A])
-    fs.foldRight[Rand[List[A]]] (z) (map2 (_, _)(_ :: _))
-  }
+  def sequence[A] (fs: List[Rand[A]]): Rand[List[A]] =
+    fs.foldRight[Rand[List[A]]] (unit (List.empty)) (map2 (_, _)(_ :: _))
 
 
   def _ints(count: Int): Rand[List[Int]] =
-    sequence[Int](List.fill (count)(int))
+    sequence (List.fill (count)(int))
 
   // Exercise 8 (6.8)
   def flatMap[A,B] (f: Rand[A])
                    (g: A => Rand[B]): Rand[B] =
     rng => {
-      val (x,r) = f (rng)
-      val (x1,r1) = g (x)(r)
-      (x1, r1) // This is just stupid, as we might as well just return g(x)(r)
+      val (a,r) = f (rng)
+      g (a)(r)
     }
 
   def nonNegativeLessThan(n: Int): Rand[Int] =
@@ -143,14 +140,7 @@ object RNG {
 
   def _map2[A,B,C] (ra: Rand[A], rb: Rand[B])
                    (f: (A, B) => C): Rand[C] =
-//    flatMap[A,C] (ra) (a => map(rb)(b => f(a,b)))
-    flatMap[(A,B),C] (rng => {
-      val (i1,r1) = ra(rng)
-      val (i2,r2) = rb(r1)
-      ((i1,i2), r2)
-    }) ((tuple: (A, B)) => {
-      r => (f (tuple._1, tuple._2),r)
-    })
+    flatMap(ra)(a => map(rb)(b => f (a,b)))
 }
 
 import State._
@@ -159,21 +149,17 @@ case class State[S, +A](run: S => (A, S)) {
 
   // Exercise 10 (6.10)
   def map[B] (f: A => B): State[S, B] =
-    flatMap[B] (a => unit[S,B] (f(a)))
+    flatMap (a => unit (f (a)))
 
   def map2[B,C] (sb: State[S, B])
                 (f: (A, B) => C): State[S, C] =
-    flatMap[C] (a => {
-      sb.map[C] (b => {
-        f(a,b)
-      })
-    })
+    flatMap (a => sb.map (b => f (a,b)))
 
   def flatMap[B] (f: A => State[S, B]): State[S, B] =
     State[S,B]((s: S) => {
       val (value, newState): (A, S) = run(s)
-      val transition = f(value) // Obtain the transition
-      transition.run(newState) // Run the transition to get the new value and state
+      val transition: State[S, B] = f (value) // Obtain the transition
+      transition.run (newState) // Run the transition to get the new value and state
     })
 
 }
@@ -192,6 +178,9 @@ object State {
 
     sas.foldRight[State[S, List[A]]] (z) (mapper)
   }
+
+  def sequence1[S,A] (sas: List[State[S, A]]): State[S, List[A]] =
+    sas.foldRight[State[S, List[A]]] (unit (List.empty)) (_.map2(_)(_::_))
 
   // This is given in the book:
   def modify[S](f: S => S): State[S, Unit] =
@@ -213,17 +202,6 @@ object State {
     val (a, ns) = transition.run (seed)
     Stream.cons[A] (a, state2stream[S,A] (transition)(ns))
   }
-
-  /**
-    * Shortcut for making a state transition from a lambda expression
-    *
-    * @param f
-    * @tparam Z
-    * @tparam C
-    * @return
-    */
-  def mkState[Z,C](f: (C) => (Z,C)): State[C,Z] =
-    State[C,Z](f)
 
   // Exercise 12
   val random_integers: List[Int] = {
