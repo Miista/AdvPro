@@ -110,6 +110,8 @@ object Tests extends App {
   {
     val fs = Stream(1,2,3).tails.map(identity).toList.flatMap(s => s.toList)
     assert (fs == List(1,2,3,2,3,3), "tails doesn't work")
+    val fs1 = Stream(1,3).tails.map(identity).toList.flatMap(s => s.toList)
+    assert (fs1 == List(1,3,3), "tails doesn't work")
   }
 
   val minuteFormat = new SimpleDateFormat("HH:mm")
