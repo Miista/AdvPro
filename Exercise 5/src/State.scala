@@ -23,13 +23,13 @@ object RNG {
   // Exercise 2 (CB 6.2)
   def double(rng: RNG): (Double, RNG) = {
     val (i,r) = nonNegativeInt(rng)
-    (i.toDouble, r)
+    (i / (Int.MaxValue.toDouble + 1), r)
   }
 
   // Exercise 3 (CB 6.3)
   def intDouble(rng: RNG): ((Int, Double), RNG) = {
     val (i, r) = nonNegativeInt (rng)
-    val (d, r2) = this.double (r)
+    val (d, r2) = double (r)
     val result = (i, d)
 
     (result, r2)

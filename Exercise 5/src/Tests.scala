@@ -13,13 +13,13 @@ object Tests extends App {
   assert (RNG.nonNegativeInt(rng) == (16159453,Simple(1059025964525L)), "RNG.nonNegativeInt doesn't work")
 
   // double
-  assert (RNG.double(rng) == (16159453d,Simple(1059025964525L)), "RNG.double doesn't work")
+  assert (RNG.double(rng) == (0.007524831686168909,Simple(1059025964525L)), "RNG.double doesn't work")
 
   // intDouble
-  assert (RNG.intDouble(rng) == ((16159453, 1.281479696E9), Simple(197491923327988L)), "RNG.intDouble doesn't work")
+  assert (RNG.intDouble(rng) == ((16159453, 0.5967354848980904), Simple(197491923327988L)), "RNG.intDouble doesn't work")
 
   // doubleInt
-assert (RNG.doubleInt(rng) == ((1.281479696E9, 16159453),Simple(197491923327988L)), "RNG.doubleInt doesn't work")
+  assert (RNG.doubleInt(rng) == ((0.5967354848980904, 16159453),Simple(197491923327988L)), "RNG.doubleInt doesn't work")
 
   // ints
   assert (RNG.ints(0)(rng) == (List(), Simple(42L)), "RNG.ints doesn't work")
