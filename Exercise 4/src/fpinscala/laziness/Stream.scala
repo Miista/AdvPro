@@ -65,7 +65,7 @@ sealed trait Stream[+A] {
   def take (n: Int): Stream[A] =
     if (n <= 0) empty[A]
     else this match {
-      case Cons(h,t) => cons[A](h(), t().take(n-1))
+      case Cons(h,t) => cons[A] (h(), t().take(n-1))
       case Empty => empty[A]
     }
 
@@ -255,9 +255,9 @@ object Stream {
       else cons (current, iter(current+1, upperBound))
     iter(0, n)
   }
-//    if (n <= 0) Empty else cons[Int](n, to(n-1))
 
-  def from (n: Int): Stream[Int] = cons[Int](n, from(n+1))
+  def from (n: Int): Stream[Int] =
+    cons (n, from (n+1))
 }
 
 // vim:tw=0:cc=80:nowrap
