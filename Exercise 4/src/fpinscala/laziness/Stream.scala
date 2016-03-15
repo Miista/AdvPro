@@ -250,9 +250,9 @@ object Stream {
     cons(a, constant(a))
 
   def to (n: Int): Stream[Int] = {
-    def iter(in: Int, l: Int): Stream[Int] =
-      if (in > l) Empty
-      else cons[Int](in, iter(in+1, l))
+    def iter(current: Int, upperBound: Int): Stream[Int] =
+      if (current > upperBound) Empty
+      else cons (current, iter(current+1, upperBound))
     iter(0, n)
   }
 //    if (n <= 0) Empty else cons[Int](n, to(n-1))
