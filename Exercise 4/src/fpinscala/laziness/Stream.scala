@@ -250,10 +250,10 @@ object Stream {
     cons(a, constant(a))
 
   def to (n: Int): Stream[Int] = {
-    def go(in: Int, l: Int): Stream[Int] =
+    def iter(in: Int, l: Int): Stream[Int] =
       if (in > l) Empty
-      else cons[Int](in, go(in+1, l))
-    go(1, n)
+      else cons[Int](in, iter(in+1, l))
+    iter(0, n)
   }
 //    if (n <= 0) Empty else cons[Int](n, to(n-1))
 
