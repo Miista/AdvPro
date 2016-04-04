@@ -88,7 +88,17 @@ object Monoid {
 
   // Exercise 10.7
 
-  // def foldMapV[A,B] (v: IndexedSeq[A], m: Monoid[B]) (f: A => B) :B =
+  def foldMapV[A, B] (v: IndexedSeq[A], m: Monoid[B])
+                     (f: A => B): B = {
+    if (v.length <= 3) {
+      foldMap (v.toList, m)(f)
+    } else {
+      val (left, right) = v.splitAt (v.length/2)
+      val lm = foldMapV (left, m)(f)
+      val lr = foldMapV (right, m)(f)
+      m.op (lm, lr)
+    }
+  }
 
   // Exercise 9
   //

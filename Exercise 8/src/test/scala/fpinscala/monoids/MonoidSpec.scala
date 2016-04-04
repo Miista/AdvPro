@@ -40,12 +40,22 @@ object MonoidSpec extends Properties("Monoids: ") {
 
   // Exercise 7
 
-  // def homomorphism[A :Arbitrary,B :Arbitrary]
-  //  (ma: Monoid[A]) (f: A => B) (mb: Monoid[B]) =
+  def homomorphism[A: Arbitrary, B: Arbitrary] (ma: Monoid[A])
+                                               (f: A => B)
+                                               (mb: Monoid[B]): Prop = {
+        forAll { (x: A, y: A) =>
+          mb.op( f(x), f(y)) == f (ma.op (x, y))
+        }
+  }
 
-  // def isomorphism[A :Arbitrary, B :Arbitrary] ...
+   def isomorphism[A :Arbitrary, B :Arbitrary] (ma: Monoid[A])
+                                               (f: A => B)
+                                               (mb: Monoid[B])
+                                               (g: B => A): Prop = {
+     homomorphism (ma)(f)(mb) && homomorphism (mb)(g)(ma)
+   }
 
-  // property ("stringMonoid and listMonoid[Char] are isomorphic") = ...
+   property ("stringMonoid and listMonoid[Char] are isomorphic") = isomorphism (stringMonoid)(_.toList)(listMonoid[Char])(_.mkString)
 
   // Exercise 8
 
