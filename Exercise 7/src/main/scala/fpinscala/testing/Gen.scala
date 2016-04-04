@@ -70,16 +70,19 @@ case class Gen[A] (sample :State[RNG,A]) {
   // So this is a solution that is ignoring the nice API that we developed.
   // It builds the result from ground up.
 
-  // def flatMap[B] (f: A => Gen[B]) :Gen[B] = ...
+  def flatMap[B] (f: A => Gen[B]): Gen[B] =
+    Gen[B] (sample.flatMap (a => f(a).sample))
 
 
   // It would be convenient to also have map (uncomment once you have unit and flatMap)
 
-  // def map[B] (f : A => B) :Gen[B] = this.flatMap (a => Gen.unit[B] (f(a)))
+  def map[B] (f: A => B): Gen[B] =
+    this.flatMap (a => Gen.unit[B] (f (a)))
 
   // Exercise 6 (Second part of Ex. 8.6)
 
-  // def listOfN(size: Gen[Int]): Gen[List[A]] = ...
+  def listOfN (size: Gen[Int]): Gen[List[A]] =
+    size.flatMap[List[A]] (listOfN) // Call to the other method
 
   // Exercise 7 (Ex. 8.7; I implemented it as a method, the book asks for a
   // function, the difference is minor; you may want to have both for
@@ -88,7 +91,8 @@ case class Gen[A] (sample :State[RNG,A]) {
   // Hint: we already have a generator that emulates tossing a coin. Which one
   // is it? Use flatMap with it.
 
-  // def union (that :Gen[A]) :Gen[A] = ...
+  def union (that: Gen[A]): Gen[A] =
+    Gen.boolean.flatMap (b => if (b) that else this)
 
   // Exercise 8 continues in the bottom of the file (in the companion object)
 }
@@ -151,7 +155,11 @@ object Gen {
   // probabilities. Then use our generator of doubles to simulate an unfair
   // coin with flatMap.
 
-  // def weighted[A](g1: (Gen[A],Double), g2: (Gen[A],Double)): Gen[A] = ...
+  def weighted[A] (g1: (Gen[A], Double), g2: (Gen[A], Double)): Gen[A] = {
+    val prob = g1._2.abs / (g1._2.abs + g2._2.abs)
+
+    Gen[A] (State(RNG.double).flatMap (d => (if (d < prob) g1._1 else g2._1).sample))
+  }
   //
   // Nice test idea for the above: create 1.0:2.0 boolean generator, translate
   // to stream, and try longer and longer prefixes to see if the law of big
