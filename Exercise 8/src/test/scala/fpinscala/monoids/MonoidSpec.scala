@@ -9,7 +9,7 @@ import org.scalacheck._
 import org.scalacheck.Prop._
 import Arbitrary.arbitrary
 
-object MonoidSpec extends Properties("Monoids..") {
+object MonoidSpec extends Properties("Monoids: ") {
 
   import Monoid._
 
@@ -28,9 +28,12 @@ object MonoidSpec extends Properties("Monoids..") {
   // Exercise 4: test listMonoid, intAddition, intMultiplication, booleanOr,
   // booleanAnd and optionMonoid.
 
-  // property ...
-  // property ...
-  // property ...
+   property ("intAddition is a monoid") = monoid (intAddition)
+   property ("intMultiplication is a monoid") = monoid (intMultiplication)
+   property ("booleanOr is a monoid") = monoid (booleanOr)
+   property ("booleanAnd is a monoid") = monoid (booleanAnd)
+   property ("optionMonoid is a monoid") = monoid (optionMonoid[Int])
+//   property ("listMonoid is a monoid") = monoid (listMonoid[Any])
   // property ...
   // property ...
   // property ...

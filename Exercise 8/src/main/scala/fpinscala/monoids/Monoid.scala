@@ -26,14 +26,32 @@ object Monoid {
 
   // Exercise 10.1
 
-  // val intAddition =
-  // val intMultiplication =
-  // val booleanOr =
-  // val booleanAnd =
+   val intAddition = new Monoid[Int] {
+     def op(a1: Int, a2: Int) = a1 + a2
+     def zero = 0
+   }
+   val intMultiplication = new Monoid[Int] {
+     def op(a1: Int, a2: Int) = a1 * a2
+     def zero = 1
+   }
+   val booleanOr = new Monoid[Boolean] {
+     def op(a1: Boolean, a2: Boolean) = a1 || a2
+     def zero = false
+   }
+   val booleanAnd = new Monoid[Boolean] {
+     def op(a1: Boolean, a2: Boolean) = a1 && a2
+     def zero = true
+   }
 
   // Exercise 10.2
 
-  // def optionMonoid[A] = ...
+  def optionMonoid[A] = new Monoid[Option[A]] {
+    override def op (a1: Option[A], a2: Option[A]): Option[A] =
+      if (a1.isEmpty) a2
+      else a1
+
+    override def zero: Option[A] = None
+  }
 
   def dual[A] (m :Monoid[A]) = new Monoid[A] {
     def op (a1: A, a2: A) = m.op(a2,a1)
@@ -41,7 +59,16 @@ object Monoid {
   }
 
   // Exercise 10.3
-  // def endoMonoid[A] =
+  def endoMonoid[A] = new Monoid[A => A] {
+    override def op (a1: (A) => A, a2: (A) => A): (A) => A =
+      a => {
+        val a_1 = a1 (a)
+        val a_2 = a2 (a_1)
+        a_2
+      }
+
+    override def zero: (A) => A = a => a
+  }
 
   // Exercise 10.4 is solved in MonoidSpec.scala
   //
@@ -55,7 +82,9 @@ object Monoid {
 
   // Exercise 10.5 (easy)
 
-  // def foldMap[A,B] (as: List[A], m: Monoid[B]) (f: A=>B): B =
+  def foldMap[A, B] (as: List[A], m: Monoid[B])
+                    (f: A => B): B =
+    as.foldLeft (m.zero)((b,a) => m.op( f(a), b))
 
   // Exercise 10.7
 
