@@ -59,9 +59,9 @@ object MonoidSpec extends Properties("Monoids: ") {
 
   // Exercise 8
 
-  // property ("booleanOr and booleanAnd are isomorphic") =
+   property ("booleanOr and booleanAnd are isomorphic") = isomorphism (booleanOr)(!_)(booleanAnd)(!_)
 
   // Exercise 9 (the testing part)
 
-  // property ("productMonoid is a monoid") =
+   property ("productMonoid is a monoid") = monoid (productMonoid (optionMonoid[Int])(listMonoid[String]))
 }
