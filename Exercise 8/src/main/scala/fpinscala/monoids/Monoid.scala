@@ -135,7 +135,7 @@ trait Foldable[F[_]] {
 
   // Exercise 10.15 (we use the mixed nature of traits here)
 
-  // def toList[A] (fa: F[A]) :List[A]
+  def toList[A] (fa: F[A]): List[A] = foldMap[A, List[A]] (fa)(List(_))(Monoid.listMonoid)
 }
 
 // Exercise 10.12 We just do Foldable[List]
