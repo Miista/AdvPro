@@ -35,13 +35,13 @@ object  MonadSpec extends Properties("Monad[F[_]] laws..") {
     associative[A,F] (m) && identity[A,F] (m)
 
   // uncomment when you have optionMonad
-  // property ("of optionMonad") = monad[Int,Option] (optionMonad)
+   property ("of optionMonad") = monad[Int,Option] (optionMonad)
 
   // Exercise 17
 
-  // property ...
-  // property ...
-  // property ...
+   property ("of listMonad with ints") = monad[Int,List] (listMonad)
+   property ("of streamMonad with ints") = monad[Int,Stream] (streamMonad)
+   property ("of streamMonad with strings") = monad[String,Stream] (streamMonad)
 
   // Exercise 19
 
