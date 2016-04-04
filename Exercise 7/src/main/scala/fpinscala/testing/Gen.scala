@@ -207,9 +207,35 @@ case class Prop (run :(TestCases,RNG) => Result) {
 
   // (Exercise 9)
 
-  // def && (that :Prop) :Prop = Prop { ... }
+  def && (that: Prop): Prop = Prop(
+    (i: Int, rng: RNG) => {
+      run (i, rng) match {
+        case (Passed | Proved) => that.run (i, rng)
+        case f => f
+      }
+    }
+  )
 
-  // def || (that :Prop) :Prop = Prop { ... }
+  def || (that: Prop): Prop = Prop {
+    (i: Int, rng: RNG) => {
+      run (i, rng) match {
+        case Falsified(msg,_) => that.tag(msg).run (i, rng)
+        case p => p
+      }
+    }
+  }
+
+  // Blatantly copied from here: https://github.com/fpinscala/fpinscala/blob/master/answers/src/main/scala/fpinscala/testing/Gen.scala#L29
+
+  /* This is rather simplistic - in the event of failure, we simply prepend
+   * the given message on a newline in front of the existing message.
+   */
+  def tag(msg: String) = Prop {
+    (n,rng) => run(n,rng) match {
+      case Falsified(e, c) => Falsified(msg + "\n" + e, c)
+      case x => x
+    }
+  }
 
 }
 
