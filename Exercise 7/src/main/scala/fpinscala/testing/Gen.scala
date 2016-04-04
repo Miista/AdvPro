@@ -60,7 +60,8 @@ case class Gen[A] (sample :State[RNG,A]) {
   // the output state of one as an input to the next.  This can be used to
   // execute a series of consecutive generations, passing the RNG state around.
 
-  // def listOfN (n :Int) :Gen[List[A]] = ...
+  def listOfN (n: Int): Gen[List[A]] =
+    Gen[List[A]] (State.sequence (List.fill (n)(this.sample)))
 
 
 
@@ -123,20 +124,22 @@ object Gen {
   // Hint: The \lstinline{State} trait already had \lstinline{unit}
   // implemented.
 
-  // def unit[A] (a : =>A) :Gen[A] = ...
+  def unit[A] (a: => A): Gen[A] =
+    Gen[A] (State.unit (a))
 
   // Hint: How do you convert a random integer number to a random Boolean?
   // Alternatively: do we already have a random generator for booleans? Could
   // we wrap it in.
 
-  // def boolean :Gen[Boolean] = ...
+  def boolean: Gen[Boolean] =
+    Gen[Boolean] (State (RNG.boolean))
 
 
   // Hint: Recall from Exercise1.scala that we already implemented a random
   // number generator for doubles.
 
-  // def double :Gen[Double] = ...
-
+  def double: Gen[Double] =
+    Gen[Double] (State (RNG.double))
 
 
   // (Exercise 4 is found in the Gen class above)
