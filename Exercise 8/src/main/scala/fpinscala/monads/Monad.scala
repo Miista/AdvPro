@@ -47,7 +47,8 @@ trait Monad[F[_]] {
 
   // Exercise 11.3
 
-  // def sequence[A] (lfa: List[F[A]]): F[List[A]] =
+  def sequence[A] (lfa: List[F[A]]): F[List[A]] =
+    lfa.foldRight (unit (List.empty[A]))(map2(_,_)(_::_))
 
   // traverse seems to simply sequence results of mapping.  I do not think that
   // it appeared in our part. You can uncomment it once you have sequence.
@@ -55,7 +56,9 @@ trait Monad[F[_]] {
 
   // Exercise 11.4
 
-  // def replicateM[A] (n: Int, ma: F[A]): F[List[A]] =
+  def replicateM[A] (n: Int, ma: F[A]): F[List[A]] = {
+    sequence (List.fill (n)(ma))
+  }
 
   def join[A] (mma: F[F[A]]): F[A] = flatMap (mma) (ma => ma)
 
