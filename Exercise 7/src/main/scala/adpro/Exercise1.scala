@@ -7,6 +7,10 @@
 // This exercise assumes that you have read Chapter 6, and it attempts to get
 // you up to speed with its main interface, so that we can work on chapter 8.
 
+// We do not use this file in the exercises. It is provide for you as a
+// refresher of the State and RNG stuff.  You can ignore it, if you do not need
+// the refresher.
+//
 // Work through the following examples line by line, running them in the REPL,
 // understanding and exercising the produced values.  Refer to Chapter 6 and to
 // the State.scala file whenever you do not understand.
@@ -30,7 +34,7 @@ package adpro
 import fpinscala.state._
 
 
-object Exercise1 extends App { // this line not needed in REPL
+object Exercise1 { // this line not needed in REPL
 
   // RNG is the type of (R)andom (N)umber (G)enerators.  Its companion object
   // (also called RNG) has a factory called "Simple" that allows creating a
