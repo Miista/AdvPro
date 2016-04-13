@@ -31,7 +31,8 @@ object data {
 
     // page 3
 
-    // def toList[A] (fa: F[A]) :List[A] = ...
+    def toList[A] (fa: F[A]) :List[A] =
+      reduceR[A, List[A]] (_::_) (fa, List.empty[A])
 
     // page 6
     //
