@@ -65,7 +65,7 @@ trait Monad[F[_]] {
   // Exercise 11.7
 
   def compose[A, B, C] (f: A => F[B], g: B => F[C]): A => F[C] =
-    a => flatMap (f (a))(b => g (b))
+    a => flatMap (f (a))(g)
 
   // Exercise 11.8
 

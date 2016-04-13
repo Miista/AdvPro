@@ -45,9 +45,54 @@ object  MonadSpec extends Properties("Monad[F[_]] laws..") {
 
   // Exercise 19
 
-  // def kleisliAssociative[A,B,C,D,F[_]] ...
-  // def kleisliIdentity[A,B,F[_]] ...
-  // def kleisliMonad[A,B,C,D,F[_]] ...
+  import fpinscala.monads._
+
+  def kleisliAssociative[A,B,C,D,F[_]] (m: Monad[F])
+                                   (implicit arbA: Arbitrary[A], 
+                                            arbFB: Arbitrary[F[B]], 
+                                            arbB: Arbitrary[B], 
+                                            arbFC: Arbitrary[F[C]], 
+                                            arbC: Arbitrary[C], 
+                                            arbFD: Arbitrary[F[D]], 
+                                            arbD: Arbitrary[D]): Prop = {
+    forAll { (x: A, f: A => F[B], g: B => F[C], h: C => F[D]) => {
+        m.compose (m.compose (f, g), h)(x) == m.compose (f, m.compose (g, h))(x)
+      }
+    }
+  }
+
+  // def kleisliAssociative[A,B,C,D,F[_]](m: Monad[F])
+  //                                     (f: A => F[B], g: B => F[C], h: C => F[D]): Prop = {
+  //   m.compose (m.compose (f, g), h) == m.compose (f, m.compose (g, h))
+  // }
+
+  def kleisliIdentity[A,B,F[_]] (m: Monad[F])
+                                (implicit arbFA: Arbitrary[F[A]], arbA: Arbitrary[A], arbFB: Arbitrary[F[B]], arbB: Arbitrary[B]): Prop = {
+    forAll { (x: A, f: A => F[B]) => {
+        m.compose (f, m.unit (_:B))(x) == f(x) && m.compose (m.unit (_:A), f)(x) == f(x)
+      }
+    }
+  }
+
+  property ("of listMonad with kleisli identity (Int -> Int)") = kleisliIdentity[Int,Int,List] (listMonad)
+  property ("of listMonad with kleisli associative (Int -> Int)") = kleisliAssociative[Int,Int,Int,Int,List] (listMonad)
+  property ("of listMonad with kleisli associative (Int -> Double -> Float -> String)") = kleisliAssociative[Int,Double,Float,String,List] (listMonad)
+  property ("of streamMonad with kleisli associative (String -> Int -> Double -> Boolean)") = kleisliAssociative[String,Int,Double,Boolean,Stream] (streamMonad)
+//  def kleisliIdentity[A,B,C,F[_]] (m: Monad[A], f: B => Monad[C]): Unit = {
+//    m.compose (m.unit[A] (_), f) == f && m.compose (f, m.unit[B])
+////    m.compose(m.unit[A],f) == f && m.compose(f, m.unit[B]) == f
+//  }
+//  def kleisliAssociative[A, B, C, D, F[_]] (m: Monad[F[B]])
+//                                           (f: A => F[B], g: B => F[C], h: C => F[D]) =
+//    m.compose (m.compose (f, g), h) == m.compose (f, m.compose (g, h))
+//
+//  def kleisliIdentity[A, B, F[_]] (m: Monad[F[B]])(f: A => F[B]) =
+//    m.compose (f, m.unit) == f && m.compose (m.unit, f) == f
+//   def kleisliMonad[A,B,C,D,F[_]] ...
+
+//  property ("of listMonad with ints") = kleisliIdentity[Int,Int,List] (listMonad)()
+//  property ("of streamMonad with ints") = monad[Int,Stream] (streamMonad)
+//  property ("of streamMonad with strings") = monad[String,Stream] (streamMonad)
 
   // property ...
   // property ...
