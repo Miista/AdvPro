@@ -35,8 +35,8 @@ object data {
       reduceR[A, List[A]] (_::_) (fa, List.empty[A])
 
     // page 6
-    //
-    // def toTree[A] (fa :F[A]) :FingerTree[A] = ...
+    def toTree[A] (fa :F[A]) :FingerTree[A] = 
+      reduceR[A, FingerTree[A]] (???) (fa, Empty())
   }
 
   // Types for Finger trees after Hinze and Pattersoni (page 4)
