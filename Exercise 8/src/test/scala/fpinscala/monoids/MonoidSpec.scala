@@ -55,13 +55,20 @@ object MonoidSpec extends Properties("Monoids: ") {
      homomorphism (ma)(f)(mb) && homomorphism (mb)(g)(ma)
    }
 
-   property ("stringMonoid and listMonoid[Char] are isomorphic") = isomorphism (stringMonoid)(_.toList)(listMonoid[Char])(_.mkString)
+  property ("stringMonoid and listMonoid[Char] are iso-homo-morphic") = 
+    homomorphism (stringMonoid)(_.toList)(listMonoid[Char]) && 
+      homomorphism (listMonoid[Char])(_.mkString)(stringMonoid)
+
+  property ("stringMonoid and listMonoid[Char] are isomorphic") = 
+    isomorphism (stringMonoid)(_.toList)(listMonoid[Char])(_.mkString)
 
   // Exercise 8
 
-   property ("booleanOr and booleanAnd are isomorphic") = isomorphism (booleanOr)(!_)(booleanAnd)(!_)
+  property ("booleanOr and booleanAnd are isomorphic") = 
+    isomorphism (booleanOr)(!_)(booleanAnd)(!_)
 
   // Exercise 9 (the testing part)
 
-   property ("productMonoid is a monoid") = monoid (productMonoid (optionMonoid[Int])(listMonoid[String]))
+  property ("productMonoid is a monoid") = 
+    monoid (productMonoid (optionMonoid[Int])(listMonoid[String]))
 }
