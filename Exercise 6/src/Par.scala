@@ -112,6 +112,7 @@ object Par {
 
   def joinViaFlatMap[A] (a: Par[Par[A]]): Par[A] =
     chooser[Par[A],A] (a)(identity)
+	//Chooser is flatMap equivalent
 
   def flatMapViaJoin[A,B] (a: Par[A])
                           (f: A => Par[B]): Par[B] =
