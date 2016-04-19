@@ -210,7 +210,7 @@ case class Prop (run :(TestCases,RNG) => Result) {
   // (Exercise 9)
 
   def && (that: Prop): Prop = Prop(
-    (i: Int, rng: RNG) => {
+    (i: TestCases, rng: RNG) => {
       run (i, rng) match {
         case (Passed | Proved) => that.run (i, rng)
         case f => f
@@ -219,7 +219,7 @@ case class Prop (run :(TestCases,RNG) => Result) {
   )
 
   def || (that: Prop): Prop = Prop {
-    (i: Int, rng: RNG) => {
+    (i: TestCases, rng: RNG) => {
       run (i, rng) match {
         case Falsified(msg,_) => that.tag(msg).run (i, rng)
         case p => p
