@@ -67,9 +67,9 @@ object  MonadSpec extends Properties("Monad[F[_]] laws..") {
   // }
 
   def kleisliIdentity[A,B,F[_]] (m: Monad[F])
-                                (implicit arbFA: Arbitrary[F[A]], arbA: Arbitrary[A], arbFB: Arbitrary[F[B]], arbB: Arbitrary[B]): Prop = {
-    forAll { (x: A, f: A => F[B]) => {
-        m.compose (f, m.unit (_:B))(x) == f(x) && m.compose (m.unit (_:A), f)(x) == f(x)
+                                (implicit arbFA: Arbitrary[F[A]], arbA: Arbitrary[A]): Prop = {
+    forAll { (x: A, f: A => F[A]) => {
+        m.compose (f, m.unit (_:A))(x) == f(x) && m.compose (m.unit (_:A), f)(x) == f(x)
       }
     }
   }
