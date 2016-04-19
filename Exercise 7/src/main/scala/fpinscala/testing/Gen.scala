@@ -119,7 +119,9 @@ object Gen {
   // \lstinline{map} function.
 
   def choose (start: Int, stopExclusive: Int): Gen[Int] =
-    Gen[Int] (State[RNG,Int] (rng => rng.nextInt))
+    Gen[Int] (
+      State[RNG,Int] (
+        rng => rng.nextInt).map (_ % (stopExclusive - start) + start))
 
 
 
