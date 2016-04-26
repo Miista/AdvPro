@@ -26,10 +26,15 @@ object data {
   // syntax of expressions.  Curried style is preferred in Haskell.
 
   trait Reduce[F[_]] {
-    def reduceR[A,B] (opr: (A,B) => B) (fa: F[A], b: B) :B
-    def reduceL[A,B] (opl: (B,A) => B) (b: B, fa: F[A]) :B
+    def reduceR[A,B] (opr: (A,B) => B) 
+                     (fa: F[A], b: B): B
+
+    def reduceL[A,B] (opl: (B,A) => B) 
+                     (b: B, fa: F[A]): B
 
     // page 3
+
+    def addLPrime[A] (fa: F[A], tree: FingerTree[A]): FingerTree[A] = ???
 
     def toList[A] (fa: F[A]) :List[A] =
       reduceR[A, List[A]] (_::_) (fa, List.empty[A])
@@ -72,7 +77,7 @@ object data {
     // implement it differently; If you want to follow the paper closely move them to
     // FingerTree object and delegate the methods, so my tests still work.
     //
-    // def empty :Boolean = ...
+    def empty: Boolean = ???
     // def nonEmpty :Boolean = ...
   }
   case class Empty () extends FingerTree[Nothing] {
@@ -165,9 +170,9 @@ object data {
     // page 5 bottom (the left triangle); Actually we could use the left
     // triangle in Scala but I am somewhat old fashioned ...
 
-    // def addL[A] ... = ...
+    def addL[A] (a: A, tree: FingerTree[A]): FingerTree[A] = ???
 
-    // def addR[A] ... = ...
+    def addR[A] (a: A, tree: FingerTree[A]): FingerTree[A] = ???
 
     // page 6
     //
@@ -178,18 +183,17 @@ object data {
     // In Haskell we need to call viewL(t) to pattern match on views.  In Scala,
     // with extractors in place, we can directly pattern match on t.
     //
-    // def viewL[A] (t: FingerTree[A]) :ViewL[A] = ...
+    def viewL[A] (t: FingerTree[A]) :ViewL[A] = ???
 
     // page 6
     //
     // A smart constructor that allows pr to be empty
     // def deepL[A] (pr: Digit[A], m: FingerTree[Node[A]], sf: Digit[A]) :FingerTree[A] =
-
     // def deepR[A] ... = ...
 
     // page 7
 
-    // def headL[A] ... = ...
+    def headL[A] (tree: FingerTree[A]): A = ???
     // def tailL[A] ... = ...
     // def headR[A] ... = ...
     // def tailR[A] ... = ...
