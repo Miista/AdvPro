@@ -121,7 +121,7 @@ object Lenses {
   //
   // Translate morris' implementation of codiag to Monocle and test it.
 
-  // def codiag1[A]: Lens[A \/ A, A] = lensChoice.choice (???)
+  def codiag1[A]: Lens[A \/ A, A] = lensChoice.choice (Lens.id, Lens.id)
   //
   // Test this implementation uncommenting tests in LensesSpec.scala
 
