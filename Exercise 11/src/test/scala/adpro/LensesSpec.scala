@@ -81,18 +81,18 @@ class LensesSpec extends FlatSpec with Checkers {
 
   // Tests for Exercise 4 (uncomment)
 
-  // "itu" should "show Alex at zipcode 2800" in
-  // { assertResult(itu.students("Alex").zipcode) ("2800") }
+  "itu" should "show Alex at zipcode 2800" in
+  { assertResult(itu.students("Alex").zipcode) ("2800") }
 
-  // "itu1" should "show Alex at zipcode 9100" in
-  // { assertResult(itu1.students("Alex").zipcode) ("9100") }
+  "itu1" should "show Alex at zipcode 9100" in
+  { assertResult(itu1.students("Alex").zipcode) ("9100") }
 
 
 
   // Test for Exercise 5 (uncomment as needed)
 
-  // "itu2" should "show Alex at zipcode 9100" in
-  // { assertResult(itu2.students("Alex").zipcode) ("9100") }
+  "itu2" should "show Alex at zipcode 9100" in
+  { assertResult(itu2.students("Alex").zipcode) ("9100") }
 
 
 

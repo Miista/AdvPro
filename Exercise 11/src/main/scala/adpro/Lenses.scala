@@ -157,7 +157,11 @@ object Lenses {
   // the copy.  For instance itu.copy (students = itu.students.tail) creates a
   // copy of ITU without the first student.
 
-  // val itu1 = ... TODO (ca. 4 lines)
+  val itu1 = itu.copy (
+      students = itu.students.foldLeft[Students] (Map.empty) ((m, kvp) => {
+        m + (if (kvp._1 == "Alex") ("Alex", kvp._2.copy(zipcode = "9100")) else kvp)
+      })
+    )
 
   // There is a test in LensesSpec to check whether  you did what expected.
   //
@@ -173,15 +177,21 @@ object Lenses {
   //
   // a) design a lense that accesses zipcode from Address objects:
 
-  // val _zipcode: Lens[Address, ZipCode] = ... TODO (1-2 lines)
+  val _zipcode: Lens[Address, ZipCode] = 
+    Lens[Address, ZipCode] (_.zipcode) (z => a => a.copy (zipcode = z))
 
   // b) design a lense that accesses the students collection from university:
 
-  // val _students: Lens[University, Students] = ... TODO (1-2 lines)
+  val _students: Lens[University, Students] = 
+    Lens[University, Students] (_.students) (s => u => u.copy (students = s))
 
   // c) Use the following index lense (name)  from Monocle:
   //
-  // index(name) :Optional[Map[String,Address],Address]
+  //index(name): Optional[Map[String,Address],Address];
+    // Optional[Map[String,Address], Address] (m => m.find((k,_) => k == name).map (o => o._2)) (v => m => m.foldLeft[Map[String,Address]] (Map.empty) ((m, kvp) => {
+    //     m + (if (kvp._1 == name) (name, v) else kvp)
+    //   }))
+    // )
   //
   // This lens focuses our view on the entry in a map with a given index.
   // Optional in the Monocle terminology is a partial lense in the terminology
@@ -191,8 +201,9 @@ object Lenses {
   // way (use the infix binary operator ^|-? to compose a lense with an
   // optional, and use ^|-> to compose the optional with a lense).
 
-  // val itu2 :University = ... TODO (1-2) lines
-
+  //val itu2: University =  _students.composeOptional(index[Map[String,Address], String, Address] ("Alex")).composeLens(_zipcode).set ("9100") (itu)
+  val itu2: University =  
+    (_students ^|-? index ("Alex") ^|-> _zipcode).set ("9100") (itu)
   // There is a test in LensesSpec to test whether what you have built behaves
   // as expected.
   //
