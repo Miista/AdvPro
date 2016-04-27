@@ -332,10 +332,10 @@ object Lenses {
   // For a simple example, use sethIth below to increment the third element on a
   // list list0
 
-  // val list0 = List[Int](1,2,3,4,5,6)
-  // val list1 = ... TODO
-  // println (list0)
-  // println (list1)
+  val list0 = List[Int](1,2,3,4,5,6)
+  val list1 = (setIth(3)).set(setIth(3).getOption(list0).get+1)(list0)
+  println (list0)
+  println (list1)
 
 }
 
