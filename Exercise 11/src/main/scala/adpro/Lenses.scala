@@ -249,9 +249,11 @@ object Lenses {
   // - a lense that extract the country from an address object (_country, you
   // will need to write that one, as we did not create it yet).
 
-  //  val _country :Lens[Address,String] = TODO (1 line)
+  val _country :Lens[Address,String] = 
+    Lens[Address,String] (_.country) (c => a => a.copy (country = c))
   //
-  //  val itu3 :University = ... TODO (1 line)
+  val itu3: University = 
+    (_students ^|->> each ^|-> _country).modify (_.toUpperCase) (itu)
 
   // LensesSpec.scala has a test to see if you succeeded.
   //
@@ -270,10 +272,12 @@ object Lenses {
   // traversal, like 'each' above. Recall that ^|->> is used to compose (append)
   // a traversal and ^|-> is used to append a lense.
 
-  // val itu4 = ... ca. 3 lines TODO
+  val itu4 = 
+    (p: (Name) => Boolean) =>
+      (_students ^|->> filterIndex (p) ^|-> _country).modify (_.toUpperCase) (itu)
 
-  // println (itu4) [cheap testing]
-
+  println (itu4) // [cheap testing]
+  println (itu4 (_ == "Axel"))
 
   // Exercise 8.  We are returning to construction of basic lenses.  Implement a
   // (partial) lens that accesses ith element of a list (let's call it index).

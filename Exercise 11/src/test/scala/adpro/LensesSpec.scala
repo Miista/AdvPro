@@ -98,8 +98,8 @@ class LensesSpec extends FlatSpec with Checkers {
 
   // Test for Exercise 6 (uncomment as needed)
 
-  // "itu3" should "have all the countries in upper case" in
-  // { assert (itu3.students.values.map(_.country).forall (s => s.toUpperCase == s)) }
+  "itu3" should "have all the countries in upper case" in
+  { assert (itu3.students.values.map(_.country).forall (s => s.toUpperCase == s)) }
 
 
 
