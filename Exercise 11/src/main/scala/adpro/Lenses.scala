@@ -302,7 +302,18 @@ object Lenses {
 
   def setIth1[A] (n: Integer, default: A) :Lens[List[A],A] = 
     Lens[List[A], A] (la => la.drop(n).headOption.getOrElse(default) ) (
-      a => la => if (n > la.length) (la ++ List.fill(la.length-n-1)(default)) :+ a else la.take(n) ++ (a :: la.drop(n+1)))
+      a => l =>
+        if (n > l.length)
+          (l ++ List.fill(n-l.length)(default)) :+ a
+        else if (n < 0)
+          a :: List.fill(math.abs(n)-1)(default) ++ l
+        else 
+          l.take(n) ++ (a :: l.drop(n+1))
+      )
+        // if (n > la.length) 
+        //   (la ++ List.fill(n-la.length-1)(default)) :+ a 
+        // else 
+        //   la.take(n) ++ (a :: la.drop(n+1)))
 
 
   // Exercise 9. To test setIth (above) you will also need to implement new
