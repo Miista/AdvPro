@@ -288,7 +288,9 @@ object Lenses {
   // get: List[A] => Option[A]
   // set: A => List[A] => List[A]
   //
-  // def setIth[A] (n: Integer) :Optional[List[A],A] = ... (1-2 lines)
+  def setIth[A] (n: Integer) :Optional[List[A],A] =
+      Optional[List[A], A] (la => la.drop(n).headOption)(
+        a => la => if (n > la.length) la else la.take(n) ++ (a :: la.drop(n+1)))
 
 
 
@@ -298,8 +300,9 @@ object Lenses {
   // element, and extend the list approprietly. In such case we obtain a total
   // lense. Try this too:
 
-  // def setIth1[A] (n: Integer, default: A) :Lens[List[A],A] = .. TODO ca. 12 lines
-
+  def setIth1[A] (n: Integer, default: A) :Lens[List[A],A] = 
+    Lens[List[A], A] (la => la.drop(n).headOption.getOrElse(default) ) (
+      a => la => if (n > la.length) (la ++ List.fill(la.length-n-1)(default)) :+ a else la.take(n) ++ (a :: la.drop(n+1)))
 
 
   // Exercise 9. To test setIth (above) you will also need to implement new
